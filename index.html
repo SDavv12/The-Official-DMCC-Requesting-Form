@@ -194,7 +194,7 @@ $("note").onclick=e=>{if(e.target.id=="retry")loadItems()};
 
 /* ---------- submit -> Google Sheet ---------- */
 const SHEET_URL=CFG.SHEET_URL||"";
-let last={key:"",ref:""};
+let last={key:"",token:""};
 $("sub").onclick=async()=>{
   const nm=$("nmI").value.trim(),dp=$("dpI").value,dt=$("dtI").value;
   if(!nm||!dp||!dt)return $("er").textContent="Please fill in your name, department and date.";
@@ -204,14 +204,14 @@ $("sub").onclick=async()=>{
   $("er").textContent="";
   const rec={name:nm,dept:dp,needBy:dt,priority:$("prI").value,notes:$("ntI").value.trim(),items:cart.map(x=>({code:x.c,name:x.n,qty:x.q,unit:x.u}))};
   const key=JSON.stringify(rec);
-  if(last.key!==key)last={key,ref:"REQ-"+Date.now().toString(36).toUpperCase()};
-  rec.ref=last.ref;
+  if(last.key!==key)last={key,token:"T"+Date.now().toString(36)+Math.random().toString(36).slice(2,8)};
+  rec.token=last.token;   // lets the sheet ignore an accidental double-send
   $("sub").disabled=true;$("sub").textContent="Submitting…";
   try{
     const r=await fetch(SHEET_URL,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify(rec)});
     const j=await r.json();
     if(!j.ok)throw new Error(j.error||"failed");
-    const ref=rec.ref;last={key:"",ref:""};reset();note(`<b>Request submitted.</b> Your reference number is <b>${esc(ref)}</b>.`);scrollTo(0,0);
+    const ref=j.ref;last={key:"",token:""};reset();note(ref?`<b>Request submitted.</b> Your reference number is <b>${esc(ref)}</b>.`:"<b>Request submitted.</b>");scrollTo(0,0);
   }catch(e){$("er").textContent="Couldn’t submit. Please check your connection and try again."}
   $("sub").disabled=false;$("sub").textContent="Submit request";
 };
