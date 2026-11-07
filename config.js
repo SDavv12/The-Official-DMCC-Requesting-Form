@@ -6,7 +6,7 @@
 window.FORM_CONFIG = {
 
   // Google Apps Script web-app URL (requests are sent here -> Google Sheet)
-  SHEET_URL: "https://script.google.com/macros/s/AKfycbxzluKhZv_W0vYZdEaIFPcH4kixgrrcZaopPgAesY7CkczG9XGL3LgV2h7wAtLJk4Va/exec",
+  SHEET_URL: "https://script.google.com/macros/s/AKfycbz-4lyWtHYqPRWo1oAFNKktZlSPjxaisQ3QIvNxI4o2ST_o-PtOMz0iEYuq2Z0cXq2qBg/exec",
 
   // The two Excel files that hold the item lists (same folder as index.html).
   // File names are case-sensitive on GitHub.
