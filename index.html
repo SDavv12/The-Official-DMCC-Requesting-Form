@@ -51,6 +51,11 @@ button:disabled{opacity:.5;cursor:default}
 .msg button{margin-left:6px;padding:3px 10px}
 [hidden]{display:none!important}
 .ub{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:0 0 12px;font-size:14px;color:var(--mu)}
+.lang{display:flex;justify-content:flex-end;gap:6px;margin-bottom:10px}
+html[lang="km"] body,html[lang="km"] input,html[lang="km"] select,html[lang="km"] textarea,html[lang="km"] button{font-family:"Noto Sans Khmer","Khmer UI","Leelawadee UI","Khmer OS Battambang",system-ui,sans-serif}
+html[lang="km"] body{line-height:1.75}
+html[lang="km"] input,html[lang="km"] select,html[lang="km"] button{line-height:1.6}
+html[lang="km"] .rf{letter-spacing:0}
 .slip .sh{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;border-bottom:2px solid var(--ac);padding-bottom:10px;margin-bottom:12px}
 .slip h2{margin:0;font-size:20px}.slip .org{color:var(--mu);font-size:13px}
 .slip .rf{font-size:22px;font-weight:700;color:var(--ac);letter-spacing:.5px;white-space:nowrap}
@@ -72,55 +77,61 @@ body{background:#fff}
 }
 </style></head>
 <body><div class="w">
-<div class="hd"><h1>Item Request Form</h1><div class="mu">Select the items you need, enter quantities, and submit. Fields marked <span class="rq">*</span> are required.</div></div>
+<div class="hd"><div class="lang noprint" id="lang"><button class="chip" data-l="en">English</button><button class="chip" data-l="km">ខ្មែរ</button></div><h1 data-i18n="title">Item Request Form</h1><div class="mu" data-i18n-html="subtitle">Select the items you need, enter quantities, and submit. Fields marked <span class="rq">*</span> are required.</div></div>
 <div id="note"></div>
 
 <div id="lg" hidden>
 <div class="c">
-<div class="f"><label class="l" for="luI">Username</label><input id="luI" autocomplete="username" autocapitalize="none" spellcheck="false" placeholder="Your department username"></div>
-<div class="f" style="margin-top:12px"><label class="l" for="lpI">Password</label><input id="lpI" type="password" autocomplete="current-password" placeholder="Password"></div>
-<div class="row" style="margin-top:14px;justify-content:flex-start"><button class="p" id="lgb">Log in</button></div>
+<div class="f"><label class="l" for="luI" data-i18n="login.user">Username</label><input id="luI" autocomplete="username" autocapitalize="none" spellcheck="false" placeholder="Your department username" data-i18n-ph="login.user.ph"></div>
+<div class="f" style="margin-top:12px"><label class="l" for="lpI" data-i18n="login.pass">Password</label><input id="lpI" type="password" autocomplete="current-password" placeholder="Password" data-i18n-ph="login.pass.ph"></div>
+<div class="row" style="margin-top:14px;justify-content:flex-start"><button class="p" id="lgb" data-i18n="login.btn">Log in</button></div>
 <div class="err" id="lge"></div>
 </div></div>
-<div class="ub noprint" id="ub" hidden><span>Logged in as <b id="ubU"></b> (<span id="ubD"></span>)</span><button id="lgo">Log out</button></div>
+<div class="ub noprint" id="ub" hidden><span><span data-i18n="ub.as">Logged in as</span> <b id="ubU"></b> (<span id="ubD"></span>)</span><button id="lgo" data-i18n="ub.out">Log out</button></div>
 
 <div id="vf" hidden>
 <div class="c"><div class="g">
-<div class="f"><label class="l" for="nmI">Your name <span class="rq">*</span></label><input id="nmI" autocomplete="name" placeholder="Full name"></div>
-<div class="f"><label class="l" for="dpI">Department / ward <span class="rq">*</span></label>
+<div class="f"><label class="l" for="nmI" data-i18n-html="f.name">Your name <span class="rq">*</span></label><input id="nmI" autocomplete="name" placeholder="Full name" data-i18n-ph="f.name.ph"></div>
+<div class="f"><label class="l" for="dpI" data-i18n-html="f.dept">Department / ward <span class="rq">*</span></label>
 <select id="dpI"><option value="">Choose…</option></select></div>
-<div class="f"><label class="l" for="prI">Priority</label><select id="prI"><option>Normal</option><option>Urgent</option></select></div>
+<div class="f"><label class="l" for="prI" data-i18n="f.prio">Priority</label><select id="prI"><option value="Normal" data-i18n="prio.Normal">Normal</option><option value="Urgent" data-i18n="prio.Urgent">Urgent</option></select></div>
 </div></div>
 
-<div class="c"><label class="l">Find items <span class="rq">*</span></label>
-<input id="q" type="search" placeholder="Search by name or code (e.g. paracetamol, S0248)">
+<div class="c"><label class="l" data-i18n-html="f.find">Find items <span class="rq">*</span></label>
+<input id="q" type="search" placeholder="Search by name or code (e.g. paracetamol, S0248)" data-i18n-ph="f.find.ph">
 <div class="ch" id="chips"></div>
 <div class="lst" id="lst"><div class="em">Loading items…</div></div>
 <div class="mu" id="rs" style="margin-top:6px"></div></div>
 
-<div class="c"><label class="l">Requested items (<span id="n">0</span>)</label><div id="cart"></div></div>
+<div class="c"><label class="l" data-i18n-html="f.req">Requested items (<span id="n">0</span>)</label><div id="cart"></div></div>
 
-<div class="c"><div class="f"><label class="l" for="ntI">Additional notes</label><textarea id="ntI" rows="3" placeholder="Anything else the store should know?"></textarea></div></div>
-<div class="row"><button class="p" id="sub">Submit request</button><button id="clr">Clear form</button></div>
+<div class="c"><div class="f"><label class="l" for="ntI" data-i18n="f.notes">Additional notes</label><textarea id="ntI" rows="3" placeholder="Anything else the store should know?" data-i18n-ph="f.notes.ph"></textarea></div></div>
+<div class="row"><button class="p" id="sub" data-i18n="btn.submit">Submit request</button><button id="clr" data-i18n="btn.clear">Clear form</button></div>
 <div class="err" id="er"></div>
 </div>
 
 <div id="done" hidden>
 <div class="msg noprint" id="doneMsg"></div>
 <div class="c slip" id="slip"></div>
-<div class="row noprint" style="justify-content:flex-start"><button class="p" id="prt">Print / Save as PDF</button><button id="newReq">New request</button></div>
+<div class="row noprint" style="justify-content:flex-start"><button class="p" id="prt" data-i18n="done.print">Print / Save as PDF</button><button id="newReq" data-i18n="done.new">New request</button></div>
 </div>
-<div class="mu noprint" style="text-align:center;margin:18px 0 6px">Form version 2026-11-08-e</div>
+<div class="mu noprint" style="text-align:center;margin:18px 0 6px"><span data-i18n="footer">Form version</span> 2026-11-08-f</div>
 
 </div>
 
-<script>document.write('<script src="config.js?t='+Date.now()+'"><\/script>')</script>
+<script>document.write('<script src="config.js?t='+Date.now()+'"><\/script><script src="lang.js?t='+Date.now()+'"><\/script>')</script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"
   onerror="this.onerror=null;var s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js';document.head.appendChild(s)"></script>
 <script>
 const CFG=window.FORM_CONFIG||{};
 const $=id=>document.getElementById(id);
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+let LANG="en",LOADED=false,LOADPROB=null,LASTDONE=null;
+/* t(key, English text, {vars}): English text is the default; Khmer comes from lang.js */
+function t(k,en,v){let s=en;if(LANG!=="en"){const d=(window.I18N&&window.I18N[LANG])||{};if(d[k]!=null)s=d[k]}
+  if(v)for(const x in v)s=s.split("{"+x+"}").join(v[x]);return s}
+const SRV={"Wrong username or password":"srv.wrong","Enter your username and password":"e.enter","Too many wrong attempts. Try again in 10 minutes.":"srv.locked","Missing fields":"srv.missing"};
+const srvMsg=m=>SRV[m]?t(SRV[m],m):m;
 const LABDEPT=CFG.LAB_DEPARTMENT||"Laboratory";
 if(CFG.ORG_NAME)document.querySelector(".hd h1").insertAdjacentHTML("beforebegin",`<div class="mu" style="font-weight:600;margin-bottom:2px">${esc(CFG.ORG_NAME)}</div>`);
 const UNITS=CFG.UNITS||["pcs"];
@@ -169,7 +180,7 @@ function autoCat(code,name){
   return "Medicines";
 }
 async function loadItems(){
-  $("lst").innerHTML='<div class="em">Loading items…</div>';$("rs").textContent="";$("sub").disabled=true;
+  LOADED=false;$("lst").innerHTML=`<div class="em">${esc(t("loading","Loading items…"))}</div>`;$("rs").textContent="";$("sub").disabled=true;
   const problems=[];
   try{await ensureXLSX()}catch(e){problems.push(e.message)}
   let act=[],lab=[];
@@ -187,41 +198,43 @@ async function loadItems(){
   ITEMS.forEach(i=>{if(!cs.includes(i[2]))cs.push(i[2])});
   CATS=["All"].concat(cs);
   if(cat!="Lab"&&!CATS.includes(cat))cat="All";
-  drawChips();list();
+  LOADED=true;drawChips();list();
   $("sub").disabled=false;
-  if(problems.length){
-    const local=location.protocol=="file:"?" Open the page through GitHub Pages (or a local web server) – browsers block loading Excel files from a local file.":"";
-    note("<b>Couldn’t load the item list.</b> "+esc(problems.join("; "))+"."+local+' <button id="retry">Try again</button>',true);
-  }else if($("note").querySelector("#retry"))note("");
+  if(problems.length){LOADPROB={problems,local:location.protocol=="file:"};renderLoadNote()}
+  else{LOADPROB=null;if($("note").querySelector("#retry"))note("")}
+}
+function renderLoadNote(){
+  const p=LOADPROB;
+  note("<b>"+esc(t("e.loadfail","Couldn’t load the item list."))+"</b> "+esc(p.problems.join("; "))+"."+(p.local?" "+esc(t("e.local","Open the page through GitHub Pages (or a local web server) – browsers block loading Excel files from a local file.")):"")+' <button id="retry">'+esc(t("e.retry","Try again"))+'</button>',true);
 }
 
 /* ---------- search / list ---------- */
-function drawChips(){const cs=isLab()?["All","Lab"].concat(CATS.slice(1)):CATS;$("chips").innerHTML=cs.map(c=>`<button class="chip${c==cat?" on":""}" data-c="${esc(c)}">${esc(c)}</button>`).join("")}
+function drawChips(){const cs=isLab()?["All","Lab"].concat(CATS.slice(1)):CATS;$("chips").innerHTML=cs.map(c=>`<button class="chip${c==cat?" on":""}" data-c="${esc(c)}">${esc(t("cat."+c,c))}</button>`).join("")}
 $("chips").onclick=e=>{const c=e.target.dataset.c;if(!c)return;cat=c;[...$("chips").children].forEach(b=>b.classList.toggle("on",b.dataset.c==c));list()};
 $("q").oninput=list;
 
 function list(){
-  const t=$("q").value.trim().toLowerCase();
-  const r=(isLab()?LAB.concat(ITEMS):ITEMS).filter(i=>(cat=="All"||i[2]==cat)&&(!t||i[1].toLowerCase().includes(t)||i[0].toLowerCase().includes(t)));
-  $("rs").textContent=r.length+" item"+(r.length==1?"":"s")+(r.length>80?" – showing first 80, refine your search":"");
-  $("lst").innerHTML=(shown=r.slice(0,80)).map((i,k)=>{const on=cart.some(x=>x.c==i[0]&&x.n==i[1]);return `<div class="it"><span class="cd">${esc(i[0])}</span><span class="nm">${esc(i[1])}</span><button data-a="${k}" ${on?"disabled":""}>${on?"Added":"+ Add"}</button></div>`}).join("")||'<div class="em">No items found</div>';
+  const qt=$("q").value.trim().toLowerCase();
+  const r=(isLab()?LAB.concat(ITEMS):ITEMS).filter(i=>(cat=="All"||i[2]==cat)&&(!qt||i[1].toLowerCase().includes(qt)||i[0].toLowerCase().includes(qt)));
+  $("rs").textContent=LOADED?t(r.length==1?"n.item":"n.items",r.length==1?"{n} item":"{n} items",{n:r.length})+(r.length>80?t("more"," – showing first 80, refine your search"):""):"";
+  $("lst").innerHTML=(shown=r.slice(0,80)).map((i,k)=>{const on=cart.some(x=>x.c==i[0]&&x.n==i[1]);return `<div class="it"><span class="cd">${esc(i[0])}</span><span class="nm">${esc(i[1])}</span><button data-a="${k}" ${on?"disabled":""}>${on?esc(t("added","Added")):esc(t("add","+ Add"))}</button></div>`}).join("")||`<div class="em">${esc(LOADED?t("none","No items found"):t("loading","Loading items…"))}</div>`;
 }
 $("lst").onclick=e=>{const c=e.target.dataset.a;if(c==null)return;const i=shown[+c];if(!i)return;cart.push({c:i[0],n:i[1],q:1,u:UNITS[0]});draw();list()};
 
 /* ---------- cart ---------- */
 function draw(){
   $("n").textContent=cart.length;
-  $("cart").innerHTML=cart.length?cart.map((x,k)=>`<div class="ln"><div class="nm">${esc(x.n)}<small>${esc(x.c)}</small></div><input type="number" min="1" step="1" value="${x.q}" data-k="${k}" data-f="q" aria-label="Quantity"><select data-k="${k}" data-f="u" aria-label="Unit">${UNITS.map(u=>`<option${u==x.u?" selected":""}>${esc(u)}</option>`).join("")}</select><button class="x" data-r="${k}" aria-label="Remove">✕</button></div>`).join(""):'<div class="em">No items yet. Search above and tap “+ Add”.</div>';
+  $("cart").innerHTML=cart.length?cart.map((x,k)=>`<div class="ln"><div class="nm">${esc(x.n)}<small>${esc(x.c)}</small></div><input type="number" min="1" step="1" value="${x.q}" data-k="${k}" data-f="q" aria-label="${esc(t("qty","Quantity"))}"><select data-k="${k}" data-f="u" aria-label="${esc(t("unit","Unit"))}">${UNITS.map(u=>`<option value="${esc(u)}"${u==x.u?" selected":""}>${esc(t("unit."+u,u))}</option>`).join("")}</select><button class="x" data-r="${k}" aria-label="${esc(t("remove","Remove"))}">✕</button></div>`).join(""):`<div class="em">${esc(t("cart.empty","No items yet. Search above and tap “+ Add”."))}</div>`;
 }
 $("cart").oninput=e=>{const k=e.target.dataset.k;if(k==null)return;cart[k][e.target.dataset.f]=e.target.dataset.f=="q"?Math.max(0,parseInt(e.target.value)||0):e.target.value};
 $("cart").onclick=e=>{const r=e.target.dataset.r;if(r==null)return;cart.splice(+r,1);draw();list()};
 
 function reset(){cart=[];$("nmI").value="";$("ntI").value="";$("prI").value="Normal";$("er").textContent="";cat="All";drawChips();draw();list()}
-$("clr").onclick=()=>{if(!cart.length||confirm("Clear everything?"))reset()};
+$("clr").onclick=()=>{if(!cart.length||confirm(t("confirm.clear","Clear everything?")))reset()};
 
 $("dpI").onchange=()=>{let m="";
   if(isLab())cat="Lab";
-  else{const n=cart.length;cart=cart.filter(x=>!LAB.some(l=>l[0]==x.c&&l[1]==x.n));if(cart.length<n)m="Lab items were removed from your request because the department changed.";if(cat=="Lab")cat="All"}
+  else{const n=cart.length;cart=cart.filter(x=>!LAB.some(l=>l[0]==x.c&&l[1]==x.n));if(cart.length<n)m=t("labremoved","Lab items were removed from your request because the department changed.");if(cat=="Lab")cat="All"}
   drawChips();draw();list();note(m,!!m)};
 
 function note(t,warn){$("note").innerHTML=t?`<div class="msg${warn?" w2":""}">${t}</div>`:""}
@@ -231,9 +244,9 @@ $("note").onclick=e=>{if(e.target.id=="retry")loadItems()};
 const SHEET_URL=CFG.SHEET_URL||"";
 let last={key:"",token:""};
 function errText(e,pre){const m=String(e&&e.message||e);
-  return m.startsWith("SERVER:")?(pre||"")+m.slice(7)
-    :m=="BAD_REPLY"?"The Google Sheet link is not answering correctly. Please tell the admin (Apps Script must be deployed as a Web app with access set to “Anyone”)."
-    :"Couldn’t reach the Google Sheet. Please check your internet and try again. If it keeps happening, tell the admin."}
+  return m.startsWith("SERVER:")?(pre?t("e.srvpre",pre):"")+srvMsg(m.slice(7))
+    :m=="BAD_REPLY"?t("e.bad","The Google Sheet link is not answering correctly. Please tell the admin (Apps Script must be deployed as a Web app with access set to “Anyone”).")
+    :t("e.net","Couldn’t reach the Google Sheet. Please check your internet and try again. If it keeps happening, tell the admin.")}
 async function api(body){
   const r=await fetch(SHEET_URL,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify(body)});
   const t=await r.text();let j;
@@ -242,11 +255,11 @@ async function api(body){
 }
 $("sub").onclick=async()=>{
   const nm=$("nmI").value.trim(),dp=$("dpI").value;
-  if(!SESS)return showLogin("Please log in.");
-  if(!nm)return $("er").textContent="Please fill in your name.";
-  if(!cart.length)return $("er").textContent="Please add at least one item.";
-  if(cart.some(x=>x.q<1))return $("er").textContent="Every item needs a quantity of at least 1.";
-  if(!SHEET_URL||SHEET_URL.startsWith("PASTE"))return $("er").textContent="This form isn’t connected to a Google Sheet yet (SHEET_URL in config.js is not set).";
+  if(!SESS)return showLogin(t("e.login","Please log in."));
+  if(!nm)return $("er").textContent=t("e.name","Please fill in your name.");
+  if(!cart.length)return $("er").textContent=t("e.items","Please add at least one item.");
+  if(cart.some(x=>x.q<1))return $("er").textContent=t("e.qty","Every item needs a quantity of at least 1.");
+  if(!SHEET_URL||SHEET_URL.startsWith("PASTE"))return $("er").textContent=t("e.noconn","This form isn’t connected to a Google Sheet yet (SHEET_URL in config.js is not set).");
   $("er").textContent="";
   // dept is only used for the printed slip: the sheet always uses the department of the logged-in account
   const rec={name:nm,dept:dp,priority:$("prI").value,notes:$("ntI").value.trim(),items:cart.map(x=>({code:x.c,name:x.n,qty:x.q,unit:x.u}))};
@@ -254,33 +267,36 @@ $("sub").onclick=async()=>{
   if(last.key!==key)last={key,token:"T"+Date.now().toString(36)+Math.random().toString(36).slice(2,8)};
   rec.token=last.token;   // lets the sheet ignore an accidental double-send
   rec.session=SESS.token;
-  $("sub").disabled=true;$("sub").textContent="Submitting…";
+  $("sub").disabled=true;$("sub").textContent=t("btn.submitting","Submitting…");
   try{
     const j=await api(rec);
     if(!j.ok){if(j.auth)throw new Error("AUTH");throw new Error("SERVER:"+(j.error||"unknown error"))}
     const ref=j.ref,snap=rec;last={key:"",token:""};reset();note("");showDone(snap,ref,j.time);
   }catch(e){
     console.error(e);
-    if(String(e&&e.message)=="AUTH")showLogin("Your login has expired. Please log in again. Your request is still here.");
+    if(String(e&&e.message)=="AUTH")showLogin(t("e.expired","Your login has expired. Please log in again. Your request is still here."));
     else $("er").textContent=errText(e,"The Google Sheet reported a problem: ");
   }
-  $("sub").disabled=false;$("sub").textContent="Submit request";
+  $("sub").disabled=false;$("sub").textContent=t("btn.submit","Submit request");
 };
 
 /* ---------- confirmation slip (print / save as PDF) ---------- */
 function showDone(r,ref,time){
-  const when=time||new Date().toLocaleString("sv-SE",{timeZone:CFG.TIMEZONE||"Asia/Phnom_Penh"});
-  $("slip").innerHTML=`<div class="sh"><div><h2>Item Request</h2>${CFG.ORG_NAME?`<div class="org">${esc(CFG.ORG_NAME)}</div>`:""}</div><div class="rf">${ref?esc(ref):""}</div></div>
-<table class="kv"><tr><td>Date / time</td><td>${esc(when)}</td></tr><tr><td>Requested by</td><td>${esc(r.name)}</td></tr><tr><td>Department</td><td>${esc(r.dept)}</td></tr><tr><td>Priority</td><td>${esc(r.priority)}</td></tr></table>
-<table class="tb"><tr><th class="n">#</th><th>Code</th><th>Item</th><th class="n">Qty</th><th>Unit</th></tr>${r.items.map((x,i)=>`<tr><td class="n">${i+1}</td><td>${esc(x.code)}</td><td>${esc(x.name)}</td><td class="n">${esc(x.qty)}</td><td>${esc(x.unit)}</td></tr>`).join("")}</table>
-${r.notes?`<div class="nt"><b>Notes:</b> ${esc(r.notes)}</div>`:""}
-<div class="sig"><div>Requested by (name / signature / date)</div><div>Received by (name / signature / date)</div></div>`;
-  $("doneMsg").innerHTML=(ref?`<b>Request submitted.</b> Your reference number is <b>${esc(ref)}</b>. `:"<b>Request submitted.</b> ")+"Print this page (or save it as PDF) and give it to the receiver to confirm.";
-  document.title=(ref?ref+" - ":"")+"Item Request";
-  $("vf").hidden=true;$("done").hidden=false;scrollTo(0,0);
+  LASTDONE={r,ref,when:time||new Date().toLocaleString("sv-SE",{timeZone:CFG.TIMEZONE||"Asia/Phnom_Penh"})};
+  renderDone();$("vf").hidden=true;$("done").hidden=false;setTitle();scrollTo(0,0);
 }
+function renderDone(){
+  const {r,ref,when}=LASTDONE;
+  $("slip").innerHTML=`<div class="sh"><div><h2>${esc(t("slip.title","Item Request"))}</h2>${CFG.ORG_NAME?`<div class="org">${esc(CFG.ORG_NAME)}</div>`:""}</div><div class="rf">${ref?esc(ref):""}</div></div>
+<table class="kv"><tr><td>${esc(t("slip.when","Date / time"))}</td><td>${esc(when)}</td></tr><tr><td>${esc(t("slip.by","Requested by"))}</td><td>${esc(r.name)}</td></tr><tr><td>${esc(t("slip.dept","Department"))}</td><td>${esc(r.dept)}</td></tr><tr><td>${esc(t("slip.prio","Priority"))}</td><td>${esc(t("prio."+r.priority,r.priority))}</td></tr></table>
+<table class="tb"><tr><th class="n">${esc(t("slip.no","#"))}</th><th>${esc(t("slip.code","Code"))}</th><th>${esc(t("slip.item","Item"))}</th><th class="n">${esc(t("slip.qty","Qty"))}</th><th>${esc(t("slip.unit","Unit"))}</th></tr>${r.items.map((x,i)=>`<tr><td class="n">${i+1}</td><td>${esc(x.code)}</td><td>${esc(x.name)}</td><td class="n">${esc(x.qty)}</td><td>${esc(t("unit."+x.unit,x.unit))}</td></tr>`).join("")}</table>
+${r.notes?`<div class="nt"><b>${esc(t("slip.notes","Notes:"))}</b> ${esc(r.notes)}</div>`:""}
+<div class="sig"><div>${esc(t("slip.sig1","Requested by (name / signature / date)"))}</div><div>${esc(t("slip.sig2","Received by (name / signature / date)"))}</div></div>`;
+  $("doneMsg").innerHTML=`<b>${esc(t("done.msg1","Request submitted."))}</b> `+(ref?`${esc(t("done.msg2","Your reference number is"))} <b>${esc(ref)}</b>. `:"")+esc(t("done.msg3","Print this page (or save it as PDF) and give it to the receiver to confirm."));
+}
+function setTitle(){document.title=!$("done").hidden&&LASTDONE?(LASTDONE.ref?LASTDONE.ref+" - ":"")+t("slip.title","Item Request"):t("title","Item Request Form")}
 $("prt").onclick=()=>window.print();
-$("newReq").onclick=()=>{$("done").hidden=true;$("vf").hidden=false;document.title="Item Request Form";scrollTo(0,0)};
+$("newReq").onclick=()=>{$("done").hidden=true;$("vf").hidden=false;setTitle();scrollTo(0,0)};
 
 /* ---------- login (department accounts are checked by the Google script) ---------- */
 const SK="irf-session";
@@ -297,25 +313,50 @@ function showApp(){
 }
 $("lgb").onclick=async()=>{
   const u=$("luI").value.trim(),p=$("lpI").value;
-  if(!u||!p)return $("lge").textContent="Enter your username and password.";
-  if(!SHEET_URL||SHEET_URL.startsWith("PASTE"))return $("lge").textContent="This form isn’t connected to a Google Sheet yet (SHEET_URL in config.js is not set).";
-  $("lgb").disabled=true;$("lgb").textContent="Checking…";$("lge").textContent="";
+  if(!u||!p)return $("lge").textContent=t("e.enter","Enter your username and password.");
+  if(!SHEET_URL||SHEET_URL.startsWith("PASTE"))return $("lge").textContent=t("e.noconn","This form isn’t connected to a Google Sheet yet (SHEET_URL in config.js is not set).");
+  $("lgb").disabled=true;$("lgb").textContent=t("login.checking","Checking…");$("lge").textContent="";
   try{
     const j=await api({action:"login",username:u,password:p});
     if(!j.ok)throw new Error("SERVER:"+(j.error||"Login failed"));
     SESS={token:j.token,dept:j.dept,user:j.user};setSess(SESS);
     $("luI").value="";$("lpI").value="";showApp();
   }catch(e){console.error(e);$("lge").textContent=errText(e,"")}
-  $("lgb").disabled=false;$("lgb").textContent="Log in";
+  $("lgb").disabled=false;$("lgb").textContent=t("login.btn","Log in");
 };
 $("luI").onkeydown=e=>{if(e.key==="Enter")$("lpI").focus()};
 $("lpI").onkeydown=e=>{if(e.key==="Enter")$("lgb").click()};
 $("lgo").onclick=()=>{
-  if(cart.length&&!confirm("Log out? Your current request will be cleared."))return;
+  if(cart.length&&!confirm(t("confirm.logout","Log out? Your current request will be cleared.")))return;
   if(SESS&&SHEET_URL)api({action:"logout",session:SESS.token}).catch(()=>{});
-  reset();note("");document.title="Item Request Form";showLogin("");
+  reset();note("");showLogin("");setTitle();
 };
+
+/* ---------- language (English / Khmer) ---------- */
+const LK="irf-lang";
+function loadKhmerFont(){if($("khf"))return;const l=document.createElement("link");l.id="khf";l.rel="stylesheet";l.href="https://fonts.googleapis.com/css2?family=Noto+Sans+Khmer:wght@400;600;700&display=swap";document.head.appendChild(l)}
+function applyLang(){
+  const K=(window.I18N&&window.I18N[LANG])||{};
+  document.querySelectorAll("[data-i18n]").forEach(el=>{if(el.dataset.en==null)el.dataset.en=el.textContent;el.textContent=(LANG!=="en"&&K[el.dataset.i18n]!=null)?K[el.dataset.i18n]:el.dataset.en});
+  document.querySelectorAll("[data-i18n-html]").forEach(el=>{if(el.dataset.en==null)el.dataset.en=el.innerHTML;el.innerHTML=(LANG!=="en"&&K[el.dataset.i18nHtml]!=null)?K[el.dataset.i18nHtml]:el.dataset.en});
+  document.querySelectorAll("[data-i18n-ph]").forEach(el=>{if(el.dataset.enPh==null)el.dataset.enPh=el.placeholder;el.placeholder=(LANG!=="en"&&K[el.dataset.i18nPh]!=null)?K[el.dataset.i18nPh]:el.dataset.enPh});
+  document.querySelectorAll("#lang button").forEach(b=>b.classList.toggle("on",b.dataset.l===LANG));
+  setTitle();drawChips();draw();list();
+  if(LOADPROB)renderLoadNote();
+  if(LASTDONE)renderDone();
+}
+function setLang(l,save){
+  if(l!=="en"&&!(window.I18N&&window.I18N[l]))l="en";
+  LANG=l;document.documentElement.lang=l;
+  if(save){try{localStorage.setItem(LK,l)}catch(e){}}
+  if(l==="km")loadKhmerFont();
+  applyLang();
+}
+$("lang").hidden=!(window.I18N&&window.I18N.km);          // no lang.js uploaded -> no language button, English only
+$("lang").onclick=e=>{const l=e.target.dataset&&e.target.dataset.l;if(l)setLang(l,true)};
 
 drawChips();draw();loadItems();
 SESS?showApp():showLogin("");
+let savedLang=null;try{savedLang=localStorage.getItem(LK)}catch(e){}
+setLang(savedLang||((navigator.language||"").toLowerCase().startsWith("km")?"km":"en"),false);
 </script></body></html>
