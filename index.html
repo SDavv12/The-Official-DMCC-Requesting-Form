@@ -126,7 +126,7 @@ body{background:#fff}
 <div class="c slip" id="slip"></div>
 <div class="row noprint" style="justify-content:flex-start"><button class="p" id="prt" data-i18n="done.print">Print / Save as PDF</button><button id="newReq" data-i18n="done.new">New request</button></div>
 </div>
-<div class="mu noprint" style="text-align:center;margin:18px 0 6px"><span data-i18n="footer">Form version</span> 2026-11-08-i</div>
+<div class="mu noprint" style="text-align:center;margin:18px 0 6px"><span data-i18n="footer">Form version</span> 2026-11-08-j</div>
 
 </div>
 
@@ -322,7 +322,7 @@ function showLogin(msg){SESS=null;setSess(null);$("vf").hidden=true;$("done").hi
 function showApp(){
   $("lg").hidden=true;$("ub").hidden=false;$("ubU").textContent=SESS.user;$("ubD").textContent=SESS.dept;
   $("dpI").innerHTML=`<option>${esc(SESS.dept)}</option>`;$("dpI").value=SESS.dept;$("dpI").disabled=true;   // department comes from the account
-  $("tabs").hidden=false;setView(/^(stock|admin)$/i.test(SESS.role||"")?"r":"n");
+  const st=/^(stock|admin)$/i.test(SESS.role||"");$("tabs").hidden=!st;setView(st?"r":"n");   // only the stock team gets the Requests tab
   cart=cart.filter(x=>!foreign(x));if(deptCat())cat=deptCat();else if(cat in DL)cat="All";
   drawChips();draw();list();
 }
