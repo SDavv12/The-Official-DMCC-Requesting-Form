@@ -49,6 +49,25 @@ button:disabled{opacity:.5;cursor:default}
 .hid{display:none}
 .ldg{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
 .msg button{margin-left:6px;padding:3px 10px}
+.slip .sh{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;border-bottom:2px solid var(--ac);padding-bottom:10px;margin-bottom:12px}
+.slip h2{margin:0;font-size:20px}.slip .org{color:var(--mu);font-size:13px}
+.slip .rf{font-size:22px;font-weight:700;color:var(--ac);letter-spacing:.5px;white-space:nowrap}
+.slip table{width:100%;border-collapse:collapse;font-size:14px}
+.slip .kv td{padding:4px 0;vertical-align:top}.slip .kv td:first-child{color:var(--mu);width:130px}
+.slip .tb{margin-top:14px}
+.slip .tb th,.slip .tb td{border:1px solid var(--bd);padding:6px 8px;text-align:left}
+.slip .tb th{background:var(--ac2)}.slip .tb .n{text-align:right;width:56px}
+.slip .nt{margin-top:12px;font-size:14px}
+.slip .sig{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-top:48px}
+.slip .sig div{border-top:1px solid var(--tx);padding-top:6px;font-size:13px;color:var(--mu)}
+@media print{
+@page{margin:14mm}
+:root:root:root{--bg:#fff;--card:#fff;--tx:#000;--mu:#444;--bd:#999;--ac:#000;--ac2:#eee;color-scheme:light}
+body{background:#fff}
+.hd,#note,#vf,.noprint{display:none!important}
+.w{max-width:none;padding:0}
+#done .c{border:0;padding:0}
+}
 </style></head>
 <body><div class="w">
 <div class="hd"><h1>Item Request Form</h1><div class="mu">Select the items you need, enter quantities, and submit. Fields marked <span class="rq">*</span> are required.</div></div>
@@ -59,7 +78,6 @@ button:disabled{opacity:.5;cursor:default}
 <div class="f"><label class="l" for="nmI">Your name <span class="rq">*</span></label><input id="nmI" autocomplete="name" placeholder="Full name"></div>
 <div class="f"><label class="l" for="dpI">Department / ward <span class="rq">*</span></label>
 <select id="dpI"><option value="">Choose…</option></select></div>
-<div class="f"><label class="l" for="dtI">Date needed <span class="rq">*</span></label><input type="date" id="dtI"></div>
 <div class="f"><label class="l" for="prI">Priority</label><select id="prI"><option>Normal</option><option>Urgent</option></select></div>
 </div></div>
 
@@ -76,9 +94,16 @@ button:disabled{opacity:.5;cursor:default}
 <div class="err" id="er"></div>
 </div>
 
+<div id="done" hidden>
+<div class="msg noprint" id="doneMsg"></div>
+<div class="c slip" id="slip"></div>
+<div class="row noprint" style="justify-content:flex-start"><button class="p" id="prt">Print / Save as PDF</button><button id="newReq">New request</button></div>
+</div>
+<div class="mu noprint" style="text-align:center;margin:18px 0 6px">Form version 2026-11-08-d</div>
+
 </div>
 
-<script src="config.js"></script>
+<script>document.write('<script src="config.js?t='+Date.now()+'"><\/script>')</script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"
   onerror="this.onerror=null;var s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js';document.head.appendChild(s)"></script>
 <script>
@@ -86,6 +111,7 @@ const CFG=window.FORM_CONFIG||{};
 const $=id=>document.getElementById(id);
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const LABDEPT=CFG.LAB_DEPARTMENT||"Laboratory";
+if(CFG.ORG_NAME)document.querySelector(".hd h1").insertAdjacentHTML("beforebegin",`<div class="mu" style="font-weight:600;margin-bottom:2px">${esc(CFG.ORG_NAME)}</div>`);
 const UNITS=CFG.UNITS||["pcs"];
 const isLab=()=>$("dpI").value==LABDEPT;
 
@@ -94,7 +120,6 @@ let cat="All",cart=[],shown=[];
 
 /* ---------- form setup ---------- */
 $("dpI").innerHTML='<option value="">Choose…</option>'+(CFG.DEPARTMENTS||[]).map(d=>`<option>${esc(d)}</option>`).join("");
-$("dtI").value=new Date().toISOString().slice(0,10);
 
 /* ---------- load items from the Excel files ---------- */
 function ensureXLSX(){
@@ -196,25 +221,47 @@ $("note").onclick=e=>{if(e.target.id=="retry")loadItems()};
 const SHEET_URL=CFG.SHEET_URL||"";
 let last={key:"",token:""};
 $("sub").onclick=async()=>{
-  const nm=$("nmI").value.trim(),dp=$("dpI").value,dt=$("dtI").value;
-  if(!nm||!dp||!dt)return $("er").textContent="Please fill in your name, department and date.";
+  const nm=$("nmI").value.trim(),dp=$("dpI").value;
+  if(!nm||!dp)return $("er").textContent="Please fill in your name and department.";
   if(!cart.length)return $("er").textContent="Please add at least one item.";
   if(cart.some(x=>x.q<1))return $("er").textContent="Every item needs a quantity of at least 1.";
   if(!SHEET_URL||SHEET_URL.startsWith("PASTE"))return $("er").textContent="This form isn’t connected to a Google Sheet yet (SHEET_URL in config.js is not set).";
   $("er").textContent="";
-  const rec={name:nm,dept:dp,needBy:dt,priority:$("prI").value,notes:$("ntI").value.trim(),items:cart.map(x=>({code:x.c,name:x.n,qty:x.q,unit:x.u}))};
+  const rec={name:nm,dept:dp,priority:$("prI").value,notes:$("ntI").value.trim(),items:cart.map(x=>({code:x.c,name:x.n,qty:x.q,unit:x.u}))};
   const key=JSON.stringify(rec);
   if(last.key!==key)last={key,token:"T"+Date.now().toString(36)+Math.random().toString(36).slice(2,8)};
   rec.token=last.token;   // lets the sheet ignore an accidental double-send
   $("sub").disabled=true;$("sub").textContent="Submitting…";
   try{
     const r=await fetch(SHEET_URL,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify(rec)});
-    const j=await r.json();
-    if(!j.ok)throw new Error(j.error||"failed");
-    const ref=j.ref;last={key:"",token:""};reset();note(ref?`<b>Request submitted.</b> Your reference number is <b>${esc(ref)}</b>.`:"<b>Request submitted.</b>");scrollTo(0,0);
-  }catch(e){$("er").textContent="Couldn’t submit. Please check your connection and try again."}
+    const t=await r.text();let j;
+    try{j=JSON.parse(t)}catch(_){console.error("Non-JSON reply from SHEET_URL:",t.slice(0,300));throw new Error("BAD_REPLY")}
+    if(!j.ok)throw new Error("SERVER:"+(j.error||"unknown error"));
+    const ref=j.ref,snap=rec;last={key:"",token:""};reset();note("");showDone(snap,ref,j.time);
+  }catch(e){
+    console.error(e);
+    const m=String(e&&e.message||e);
+    $("er").textContent=m.startsWith("SERVER:")?"The Google Sheet reported a problem: "+m.slice(7)
+      :m=="BAD_REPLY"?"The Google Sheet link is not answering correctly. Please tell the admin (Apps Script must be deployed as a Web app with access set to “Anyone”)."
+      :"Couldn’t reach the Google Sheet. Please check your internet and try again. If it keeps happening, tell the admin."}
   $("sub").disabled=false;$("sub").textContent="Submit request";
 };
+
+
+/* ---------- confirmation slip (print / save as PDF) ---------- */
+function showDone(r,ref,time){
+  const when=time||new Date().toLocaleString("sv-SE",{timeZone:CFG.TIMEZONE||"Asia/Phnom_Penh"});
+  $("slip").innerHTML=`<div class="sh"><div><h2>Item Request</h2>${CFG.ORG_NAME?`<div class="org">${esc(CFG.ORG_NAME)}</div>`:""}</div><div class="rf">${ref?esc(ref):""}</div></div>
+<table class="kv"><tr><td>Date / time</td><td>${esc(when)}</td></tr><tr><td>Requested by</td><td>${esc(r.name)}</td></tr><tr><td>Department</td><td>${esc(r.dept)}</td></tr><tr><td>Priority</td><td>${esc(r.priority)}</td></tr></table>
+<table class="tb"><tr><th class="n">#</th><th>Code</th><th>Item</th><th class="n">Qty</th><th>Unit</th></tr>${r.items.map((x,i)=>`<tr><td class="n">${i+1}</td><td>${esc(x.code)}</td><td>${esc(x.name)}</td><td class="n">${esc(x.qty)}</td><td>${esc(x.unit)}</td></tr>`).join("")}</table>
+${r.notes?`<div class="nt"><b>Notes:</b> ${esc(r.notes)}</div>`:""}
+<div class="sig"><div>Requested by (name / signature / date)</div><div>Received by (name / signature / date)</div></div>`;
+  $("doneMsg").innerHTML=(ref?`<b>Request submitted.</b> Your reference number is <b>${esc(ref)}</b>. `:"<b>Request submitted.</b> ")+"Print this page (or save it as PDF) and give it to the receiver to confirm.";
+  document.title=(ref?ref+" - ":"")+"Item Request";
+  $("vf").hidden=true;$("done").hidden=false;scrollTo(0,0);
+}
+$("prt").onclick=()=>window.print();
+$("newReq").onclick=()=>{$("done").hidden=true;$("vf").hidden=false;document.title="Item Request Form";scrollTo(0,0)};
 
 drawChips();draw();loadItems();
 </script></body></html>
