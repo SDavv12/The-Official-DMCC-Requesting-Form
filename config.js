@@ -13,17 +13,21 @@ window.FORM_CONFIG = {
   // Time zone used for the time printed on the slip
   TIMEZONE: "Asia/Phnom_Penh",
 
-  // The two Excel files that hold the item lists (same folder as index.html).
+  // The Excel file with the main item list (same folder as index.html).
   // File names are case-sensitive on GitHub.
   ACTIVE_FILE: "Active_ALL.xlsx",   // all items: code | name | (optional) category
-  LAB_FILE:    "LAb_items.xlsx",    // lab items: "CODE - Name" in column A
 
-  // Selecting this department also shows the lab items
-  LAB_DEPARTMENT: "Laboratory",
+  // Departments that also get their own item list (shown first, with their own filter button).
+  //   dept = department name exactly as in the account, file = Excel file, cat = filter button name
+  // To add another department, add one more line here and upload its Excel file.
+  DEPT_ITEMS: [
+    { dept: "Laboratory",   file: "LAb_items.xlsx", cat: "Lab" },          // "CODE - Name" in column A
+    { dept: "Housekeeping", file: "HK_items.xlsx",  cat: "Housekeeping" }  // code | name | category | default unit
+  ],
 
   // Dropdown choices
-  DEPARTMENTS: ["Pharmacy", "Laboratory", "Other"],
-  UNITS: ["pcs", "box", "bottle", "vial", "tube", "sachet", "pack", "amp"],
+  DEPARTMENTS: ["Pharmacy", "Laboratory", "Housekeeping", "Other"],
+  UNITS: ["pcs", "box", "bottle", "vial", "tube", "sachet", "pack", "amp", "pair", "roll", "case", "container", "bundle"],
 
   // Category filter buttons are worked out automatically for Active_ALL:
   //   - code starting with S + digits  -> Supplies

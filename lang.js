@@ -60,6 +60,7 @@ window.I18N = { km: {
   "cat.Milk": "ទឹកដោះគោ",
   "cat.Supplies": "សម្ភារៈ",
   "cat.Lab": "មន្ទីរពិសោធន៍",
+  "cat.Housekeeping": "ផ្នែកសម្អាត",
 
   // ---- units (the Google Sheet always receives the English unit) ----
   "unit.pcs": "ដុំ",
@@ -70,6 +71,11 @@ window.I18N = { km: {
   "unit.sachet": "កញ្ចប់តូច",
   "unit.pack": "កញ្ចប់",
   "unit.amp": "អំពូល",
+  "unit.pair": "គូ",
+  "unit.roll": "រ៉ូល",
+  "unit.case": "កេស",
+  "unit.container": "ធុង",
+  "unit.bundle": "យួរ",
 
   // ---- confirmation + printed slip ----
   "done.msg1": "បានដាក់ស្នើសុំរួចរាល់។",

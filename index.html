@@ -115,7 +115,7 @@ body{background:#fff}
 <div class="c slip" id="slip"></div>
 <div class="row noprint" style="justify-content:flex-start"><button class="p" id="prt" data-i18n="done.print">Print / Save as PDF</button><button id="newReq" data-i18n="done.new">New request</button></div>
 </div>
-<div class="mu noprint" style="text-align:center;margin:18px 0 6px"><span data-i18n="footer">Form version</span> 2026-11-08-f</div>
+<div class="mu noprint" style="text-align:center;margin:18px 0 6px"><span data-i18n="footer">Form version</span> 2026-11-08-g</div>
 
 </div>
 
@@ -132,12 +132,14 @@ function t(k,en,v){let s=en;if(LANG!=="en"){const d=(window.I18N&&window.I18N[LA
   if(v)for(const x in v)s=s.split("{"+x+"}").join(v[x]);return s}
 const SRV={"Wrong username or password":"srv.wrong","Enter your username and password":"e.enter","Too many wrong attempts. Try again in 10 minutes.":"srv.locked","Missing fields":"srv.missing"};
 const srvMsg=m=>SRV[m]?t(SRV[m],m):m;
-const LABDEPT=CFG.LAB_DEPARTMENT||"Laboratory";
+const DEPTS=CFG.DEPT_ITEMS||[{dept:"Laboratory",file:"LAb_items.xlsx",cat:"Lab"}];   // departments that have their own item list
 if(CFG.ORG_NAME)document.querySelector(".hd h1").insertAdjacentHTML("beforebegin",`<div class="mu" style="font-weight:600;margin-bottom:2px">${esc(CFG.ORG_NAME)}</div>`);
 const UNITS=CFG.UNITS||["pcs"];
-const isLab=()=>$("dpI").value.trim().toLowerCase()==LABDEPT.toLowerCase();
+const deptCat=()=>{const d=$("dpI").value.trim().toLowerCase();const m=DEPTS.find(x=>x.dept.toLowerCase()==d);return m?m.cat:""};
+const own=()=>DL[deptCat()]||[];
+const foreign=x=>Object.keys(DL).some(k=>k!=deptCat()&&DL[k].some(l=>l[0]==x.c&&l[1]==x.n));
 
-let ITEMS=[],LAB=[],CATS=["All"];
+let ITEMS=[],DL={},CATS=["All"];
 let cat="All",cart=[],shown=[];
 
 /* ---------- form setup ---------- */
@@ -159,16 +161,16 @@ function parseRows(rows){
   for(const row of rows){
     const cells=row.map(c=>typeof c==="number"?c:String(c).replace(/\s+/g," ").trim()).filter(c=>c!=="");
     if(!cells.length)continue;
-    let code,name,cat;
+    let code,name,cat,unit;
     if(cells.length==1){
       const m=String(cells[0]).match(/^([A-Za-z0-9]+)\s*[-–—]\s*(.+)$/);
       if(!m)continue;
       code=m[1];name=m[2];
-    }else{code=cells[0];name=cells[1];cat=cells[2]}
+    }else{code=cells[0];name=cells[1];cat=cells[2];unit=cells[3]}
     code=String(code);if(/^\d+$/.test(code))code=code.padStart(4,"0");          // Excel drops leading zeros: 127 -> 0127
     name=String(name).trim();
     if(/^(item\s*)?code$/i.test(code)||!name)continue;                       // header row
-    out.push([code,name,typeof cat==="string"?cat:""]);
+    out.push([code,name,typeof cat==="string"?cat:"",typeof unit==="string"?unit:""]);
   }
   return out;
 }
@@ -183,21 +185,22 @@ async function loadItems(){
   LOADED=false;$("lst").innerHTML=`<div class="em">${esc(t("loading","Loading items…"))}</div>`;$("rs").textContent="";$("sub").disabled=true;
   const problems=[];
   try{await ensureXLSX()}catch(e){problems.push(e.message)}
-  let act=[],lab=[];
+  let act=[];const dl={};
   if(window.XLSX){
-    const [a,l]=await Promise.allSettled([readSheet(CFG.ACTIVE_FILE),readSheet(CFG.LAB_FILE)]);
+    const [a,...ls]=await Promise.allSettled([readSheet(CFG.ACTIVE_FILE)].concat(DEPTS.map(d=>readSheet(d.file))));
     if(a.status=="fulfilled"){act=parseRows(a.value).map(i=>[i[0],i[1],i[2]||autoCat(i[0],i[1])]);if(!act.length)problems.push(CFG.ACTIVE_FILE+" has no items (code in column 1, name in column 2)")}
     else problems.push(a.reason.message);
-    if(l.status=="fulfilled"){lab=parseRows(l.value).map(i=>[i[0],i[1],"Lab"]);if(!lab.length)problems.push(CFG.LAB_FILE+" has no items (use “CODE - Name” in column A)")}
-    else problems.push(l.reason.message);
+    ls.forEach((l,k)=>{const d=DEPTS[k];dl[d.cat]=[];
+      if(l.status=="fulfilled"){dl[d.cat]=parseRows(l.value).map(i=>[i[0],i[1],d.cat,i[3]]);if(!dl[d.cat].length)problems.push(d.file+" has no items (use “CODE - Name” in column A)")}
+      else problems.push(l.reason.message)});
   }
-  ITEMS=act;LAB=lab;
-  const seen={};ITEMS.concat(LAB).forEach(i=>{(seen[i[0]]=seen[i[0]]||[]).push(i[1])});
+  ITEMS=act;DL=dl;
+  const seen={};ITEMS.concat(...Object.values(DL)).forEach(i=>{(seen[i[0]]=seen[i[0]]||[]).push(i[1])});
   Object.keys(seen).filter(k=>seen[k].length>1).forEach(k=>console.warn("Duplicate item code "+k+":",seen[k]));
   const cs=[];(CFG.CATEGORY_ORDER||[]).forEach(c=>{if(ITEMS.some(i=>i[2]==c))cs.push(c)});
   ITEMS.forEach(i=>{if(!cs.includes(i[2]))cs.push(i[2])});
   CATS=["All"].concat(cs);
-  if(cat!="Lab"&&!CATS.includes(cat))cat="All";
+  if(!(cat in DL)&&!CATS.includes(cat))cat="All";
   LOADED=true;drawChips();list();
   $("sub").disabled=false;
   if(problems.length){LOADPROB={problems,local:location.protocol=="file:"};renderLoadNote()}
@@ -209,17 +212,17 @@ function renderLoadNote(){
 }
 
 /* ---------- search / list ---------- */
-function drawChips(){const cs=isLab()?["All","Lab"].concat(CATS.slice(1)):CATS;$("chips").innerHTML=cs.map(c=>`<button class="chip${c==cat?" on":""}" data-c="${esc(c)}">${esc(t("cat."+c,c))}</button>`).join("")}
+function drawChips(){const dc=deptCat(),cs=dc?["All",dc].concat(CATS.slice(1)):CATS;$("chips").innerHTML=cs.map(c=>`<button class="chip${c==cat?" on":""}" data-c="${esc(c)}">${esc(t("cat."+c,c))}</button>`).join("")}
 $("chips").onclick=e=>{const c=e.target.dataset.c;if(!c)return;cat=c;[...$("chips").children].forEach(b=>b.classList.toggle("on",b.dataset.c==c));list()};
 $("q").oninput=list;
 
 function list(){
   const qt=$("q").value.trim().toLowerCase();
-  const r=(isLab()?LAB.concat(ITEMS):ITEMS).filter(i=>(cat=="All"||i[2]==cat)&&(!qt||i[1].toLowerCase().includes(qt)||i[0].toLowerCase().includes(qt)));
+  const r=own().concat(ITEMS).filter(i=>(cat=="All"||i[2]==cat)&&(!qt||i[1].toLowerCase().includes(qt)||i[0].toLowerCase().includes(qt)));
   $("rs").textContent=LOADED?t(r.length==1?"n.item":"n.items",r.length==1?"{n} item":"{n} items",{n:r.length})+(r.length>80?t("more"," – showing first 80, refine your search"):""):"";
   $("lst").innerHTML=(shown=r.slice(0,80)).map((i,k)=>{const on=cart.some(x=>x.c==i[0]&&x.n==i[1]);return `<div class="it"><span class="cd">${esc(i[0])}</span><span class="nm">${esc(i[1])}</span><button data-a="${k}" ${on?"disabled":""}>${on?esc(t("added","Added")):esc(t("add","+ Add"))}</button></div>`}).join("")||`<div class="em">${esc(LOADED?t("none","No items found"):t("loading","Loading items…"))}</div>`;
 }
-$("lst").onclick=e=>{const c=e.target.dataset.a;if(c==null)return;const i=shown[+c];if(!i)return;cart.push({c:i[0],n:i[1],q:1,u:UNITS[0]});draw();list()};
+$("lst").onclick=e=>{const c=e.target.dataset.a;if(c==null)return;const i=shown[+c];if(!i)return;cart.push({c:i[0],n:i[1],q:1,u:UNITS.includes(i[3])?i[3]:UNITS[0]});draw();list()};
 
 /* ---------- cart ---------- */
 function draw(){
@@ -233,8 +236,8 @@ function reset(){cart=[];$("nmI").value="";$("ntI").value="";$("prI").value="Nor
 $("clr").onclick=()=>{if(!cart.length||confirm(t("confirm.clear","Clear everything?")))reset()};
 
 $("dpI").onchange=()=>{let m="";
-  if(isLab())cat="Lab";
-  else{const n=cart.length;cart=cart.filter(x=>!LAB.some(l=>l[0]==x.c&&l[1]==x.n));if(cart.length<n)m=t("labremoved","Lab items were removed from your request because the department changed.");if(cat=="Lab")cat="All"}
+  const n=cart.length;cart=cart.filter(x=>!foreign(x));if(cart.length<n)m=t("labremoved","Lab items were removed from your request because the department changed.");
+  if(deptCat())cat=deptCat();else if(cat in DL)cat="All";
   drawChips();draw();list();note(m,!!m)};
 
 function note(t,warn){$("note").innerHTML=t?`<div class="msg${warn?" w2":""}">${t}</div>`:""}
@@ -308,7 +311,7 @@ function showApp(){
   $("lg").hidden=true;$("ub").hidden=false;$("ubU").textContent=SESS.user;$("ubD").textContent=SESS.dept;
   $("dpI").innerHTML=`<option>${esc(SESS.dept)}</option>`;$("dpI").value=SESS.dept;$("dpI").disabled=true;   // department comes from the account
   $("done").hidden=true;$("vf").hidden=false;
-  if(isLab())cat="Lab";else{cart=cart.filter(x=>!LAB.some(l=>l[0]==x.c&&l[1]==x.n));if(cat=="Lab")cat="All"}
+  cart=cart.filter(x=>!foreign(x));if(deptCat())cat=deptCat();else if(cat in DL)cat="All";
   drawChips();draw();list();
 }
 $("lgb").onclick=async()=>{
