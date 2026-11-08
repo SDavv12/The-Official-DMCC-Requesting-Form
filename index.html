@@ -365,7 +365,7 @@ function showLogin(msg){SESS=null;setSess(null);$("vf").hidden=true;$("done").hi
 function showApp(){
   $("lg").hidden=true;$("ub").hidden=false;$("ubU").textContent=SESS.user;$("ubD").textContent=SESS.dept;
   $("dpI").innerHTML=`<option>${esc(SESS.dept)}</option>`;$("dpI").value=SESS.dept;$("dpI").disabled=true;   // department comes from the account
-  const st=/^(stock|admin)$/i.test(SESS.role||"");$("tabs").hidden=false;$("tDash").hidden=!st;setView(st?"d":"n");startPoll();checkNotices();   // only the stock team gets the Requests tab
+  const st=/^(stock|admin)$/i.test(SESS.role||"");$("tabs").hidden=false;$("tDash").hidden=!st;$("tNew").hidden=st;setView(st?"d":"n");startPoll();checkNotices();   // stock/admin: no New request tab, only Requests + Dashboard
   cart=cart.filter(x=>!foreign(x));if(deptCat())cat=deptCat();else if(cat in DL)cat="All";
   drawChips();draw();list();
 }
