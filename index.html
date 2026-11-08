@@ -115,7 +115,7 @@ body{background:#fff}
 <div class="c slip" id="slip"></div>
 <div class="row noprint" style="justify-content:flex-start"><button class="p" id="prt" data-i18n="done.print">Print / Save as PDF</button><button id="newReq" data-i18n="done.new">New request</button></div>
 </div>
-<div class="mu noprint" style="text-align:center;margin:18px 0 6px"><span data-i18n="footer">Form version</span> 2026-11-08-g</div>
+<div class="mu noprint" style="text-align:center;margin:18px 0 6px"><span data-i18n="footer">Form version</span> 2026-11-08-h</div>
 
 </div>
 
@@ -137,6 +137,7 @@ if(CFG.ORG_NAME)document.querySelector(".hd h1").insertAdjacentHTML("beforebegin
 const UNITS=CFG.UNITS||["pcs"];
 const deptCat=()=>{const d=$("dpI").value.trim().toLowerCase();const m=DEPTS.find(x=>x.dept.toLowerCase()==d);return m?m.cat:""};
 const own=()=>DL[deptCat()]||[];
+const deptOnly=()=>{const d=$("dpI").value.trim().toLowerCase();const m=DEPTS.find(x=>x.dept.toLowerCase()==d);return !!(m&&m.only)};   // "only: true" -> this department sees just its own list
 const foreign=x=>Object.keys(DL).some(k=>k!=deptCat()&&DL[k].some(l=>l[0]==x.c&&l[1]==x.n));
 
 let ITEMS=[],DL={},CATS=["All"];
@@ -212,13 +213,13 @@ function renderLoadNote(){
 }
 
 /* ---------- search / list ---------- */
-function drawChips(){const dc=deptCat(),cs=dc?["All",dc].concat(CATS.slice(1)):CATS;$("chips").innerHTML=cs.map(c=>`<button class="chip${c==cat?" on":""}" data-c="${esc(c)}">${esc(t("cat."+c,c))}</button>`).join("")}
+function drawChips(){const dc=deptCat(),cs=deptOnly()?[]:dc?["All",dc].concat(CATS.slice(1)):CATS;$("chips").innerHTML=cs.map(c=>`<button class="chip${c==cat?" on":""}" data-c="${esc(c)}">${esc(t("cat."+c,c))}</button>`).join("")}
 $("chips").onclick=e=>{const c=e.target.dataset.c;if(!c)return;cat=c;[...$("chips").children].forEach(b=>b.classList.toggle("on",b.dataset.c==c));list()};
 $("q").oninput=list;
 
 function list(){
   const qt=$("q").value.trim().toLowerCase();
-  const r=own().concat(ITEMS).filter(i=>(cat=="All"||i[2]==cat)&&(!qt||i[1].toLowerCase().includes(qt)||i[0].toLowerCase().includes(qt)));
+  const r=(deptOnly()?own():own().concat(ITEMS)).filter(i=>(cat=="All"||i[2]==cat)&&(!qt||i[1].toLowerCase().includes(qt)||i[0].toLowerCase().includes(qt)));
   $("rs").textContent=LOADED?t(r.length==1?"n.item":"n.items",r.length==1?"{n} item":"{n} items",{n:r.length})+(r.length>80?t("more"," – showing first 80, refine your search"):""):"";
   $("lst").innerHTML=(shown=r.slice(0,80)).map((i,k)=>{const on=cart.some(x=>x.c==i[0]&&x.n==i[1]);return `<div class="it"><span class="cd">${esc(i[0])}</span><span class="nm">${esc(i[1])}</span><button data-a="${k}" ${on?"disabled":""}>${on?esc(t("added","Added")):esc(t("add","+ Add"))}</button></div>`}).join("")||`<div class="em">${esc(LOADED?t("none","No items found"):t("loading","Loading items…"))}</div>`;
 }

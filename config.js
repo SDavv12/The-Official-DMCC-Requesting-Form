@@ -20,9 +20,10 @@ window.FORM_CONFIG = {
   // Departments that also get their own item list (shown first, with their own filter button).
   //   dept = department name exactly as in the account, file = Excel file, cat = filter button name
   // To add another department, add one more line here and upload its Excel file.
+  // Add  only: true  to a line to hide the main list (medicines, vaccines, milk, supplies) from that department.
   DEPT_ITEMS: [
     { dept: "Laboratory",   file: "LAb_items.xlsx", cat: "Lab" },          // "CODE - Name" in column A
-    { dept: "Housekeeping", file: "HK_items.xlsx",  cat: "Housekeeping" }  // code | name | category | default unit
+    { dept: "Housekeeping", file: "HK_items.xlsx",  cat: "Housekeeping", only: true }  // code | name | category | default unit; only:true = sees ONLY this list
   ],
 
   // Dropdown choices
