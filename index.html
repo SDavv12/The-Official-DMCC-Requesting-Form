@@ -81,6 +81,8 @@ html[lang="km"] body{line-height:1.75}
 html[lang="km"] input,html[lang="km"] select,html[lang="km"] button{line-height:1.6}
 html[lang="km"] .rf{letter-spacing:0}
 .slip .sh{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;border-bottom:2px solid var(--ac);padding-bottom:10px;margin-bottom:12px}
+.slip .print-logo{text-align:center;margin:0 0 14px}
+.slip .print-logo img{height:88px;width:auto;max-width:280px;display:inline-block}
 .slip h2{margin:0;font-size:20px}.slip .org{color:var(--mu);font-size:13px}
 .slip .rf{font-size:22px;font-weight:700;color:var(--ac);letter-spacing:.5px;white-space:nowrap}
 .slip table{width:100%;border-collapse:collapse;font-size:14px}
@@ -345,7 +347,8 @@ function showDone(r,ref,time){
 }
 function renderDone(){
   const {r,ref,when}=LASTDONE;
-  $("slip").innerHTML=`<div class="sh"><div><h2>${esc(t("slip.title","Item Request"))}</h2>${CFG.ORG_NAME?`<div class="org">${esc(CFG.ORG_NAME)}</div>`:""}</div><div class="rf">${ref?esc(ref):""}</div></div>
+  $("slip").innerHTML=`<div class="print-logo"><img src="logo-print.png" alt="Domrey Mother & Child Clinic"></div>
+<div class="sh"><div><h2>${esc(t("slip.title","Item Request"))}</h2>${CFG.ORG_NAME?`<div class="org">${esc(CFG.ORG_NAME)}</div>`:""}</div><div class="rf">${ref?esc(ref):""}</div></div>
 <table class="kv"><tr><td>${esc(t("slip.when","Date / time"))}</td><td>${esc(when)}</td></tr><tr><td>${esc(t("slip.by","Requested by"))}</td><td>${esc(r.name)}</td></tr><tr><td>${esc(t("slip.dept","Department"))}</td><td>${esc(r.dept)}</td></tr><tr><td>${esc(t("slip.prio","Priority"))}</td><td>${esc(t("prio."+r.priority,r.priority))}</td></tr></table>
 <table class="tb"><tr><th class="n">${esc(t("slip.no","#"))}</th><th>${esc(t("slip.code","Code"))}</th><th>${esc(t("slip.item","Item"))}</th><th class="n">${esc(t("slip.qty","Qty"))}</th><th>${esc(t("slip.unit","Unit"))}</th></tr>${r.items.map((x,i)=>`<tr><td class="n">${i+1}</td><td>${esc(x.code)}</td><td>${esc(x.name)}</td><td class="n">${esc(x.qty)}</td><td>${esc(t("unit."+x.unit,x.unit))}</td></tr>`).join("")}</table>
 ${r.notes?`<div class="nt"><b>${esc(t("slip.notes","Notes:"))}</b> ${esc(r.notes)}</div>`:""}
@@ -515,7 +518,8 @@ function showPS(ref,ver){
 }
 function renderPS(){
   const {x,a}=PSX,ok=a.items.length==x.items.length;
-  $("pslip").innerHTML=`<div class="sh"><div><h2>${esc(t("ps.title","Approved Request"))}</h2>${CFG.ORG_NAME?`<div class="org">${esc(CFG.ORG_NAME)}</div>`:""}</div><div class="rf">${esc(x.ref)}</div></div>
+  $("pslip").innerHTML=`<div class="print-logo"><img src="logo-print.png" alt="Domrey Mother & Child Clinic"></div>
+<div class="sh"><div><h2>${esc(t("ps.title","Approved Request"))}</h2>${CFG.ORG_NAME?`<div class="org">${esc(CFG.ORG_NAME)}</div>`:""}</div><div class="rf">${esc(x.ref)}</div></div>
 <table class="kv"><tr><td>${esc(t("slip.when","Date / time"))}</td><td>${esc(x.time)}</td></tr><tr><td>${esc(t("slip.by","Requested by"))}</td><td>${esc(x.name)}</td></tr><tr><td>${esc(t("slip.dept","Department"))}</td><td>${esc(x.dept)}</td></tr><tr><td>${esc(t("slip.prio","Priority"))}</td><td>${esc(t("prio."+x.priority,x.priority))}</td></tr><tr><td>${esc(t("ps.appr","Approval"))}</td><td>v${a.ver} · ${esc(a.time)} · ${esc(a.by)}</td></tr></table>
 <table class="tb"><tr><th class="n">${esc(t("slip.no","#"))}</th><th>${esc(t("slip.code","Code"))}</th><th>${esc(t("slip.item","Item"))}</th><th class="n">${esc(t("ap.req","Requested"))}</th><th class="n">${esc(t("ap.apprshort","Approved"))}</th><th>${esc(t("slip.unit","Unit"))}</th><th>${esc(t("ap.reason","Reason"))}</th></tr>${x.items.map((i,k)=>{const al=ok&&a.items[k]?a.items[k]:{approved:i.qty,reason:""},ch=Number(al.approved)!==Number(i.qty);return `<tr><td class="n">${k+1}</td><td>${esc(i.code)}</td><td>${esc(i.name)}</td><td class="n">${esc(i.qty)}</td><td class="n ${Number(al.approved)===0?"z":ch?"ch":""}">${esc(al.approved)}</td><td>${esc(unitOf(i.unit))}</td><td>${esc(al.reason||"")}</td></tr>`}).join("")}</table>
 ${a.remarks?`<div class="nt"><b>${esc(t("ap.mremarks","Main Stock remarks"))}:</b> ${esc(a.remarks).replace(/\n/g,"<br>")}</div>`:""}
