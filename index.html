@@ -85,6 +85,45 @@ body{background:#fff}
 .w{max-width:none;padding:0}
 #done .c{border:0;padding:0}
 }
+.hr{display:flex;align-items:center;justify-content:space-between;gap:12px}.hr img{height:84px;width:auto;flex:none;background:#fff;border-radius:10px;padding:4px}
+.kp{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin:4px 0 14px}
+.kp div{border:1px solid var(--bd);border-radius:10px;padding:10px 12px;background:var(--bg)}
+.kp b{display:block;font-size:24px;line-height:1.2;color:var(--ac);font-variant-numeric:tabular-nums}.kp span{font-size:12px;color:var(--mu)}
+.dt{width:100%;border-collapse:collapse;font-size:14px}.dt th,.dt td{padding:7px 8px;border-bottom:1px solid var(--bd);text-align:left;vertical-align:middle}
+.dt th{font-size:12px;color:var(--mu);font-weight:600;white-space:nowrap}.dt .n{text-align:right;font-variant-numeric:tabular-nums}
+.dt tr:last-child td{border-bottom:0}.dt tfoot td{font-weight:700;border-top:2px solid var(--bd)}
+.bar{height:10px;border-radius:99px;background:var(--ac2);min-width:70px;overflow:hidden}.bar i{display:block;height:100%;background:var(--ac);border-radius:99px}
+.sc{overflow-x:auto}.dt .sel{background:var(--ac2)}
+.h3{margin:0 0 8px;font-size:16px}
+
+.ldg{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.msg button{margin-left:6px;padding:3px 10px}
+[hidden]{display:none!important}
+.ub{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:0 0 12px;font-size:14px;color:var(--mu)}
+.lang{display:flex;justify-content:flex-end;gap:6px;margin-bottom:10px}
+html[lang="km"] body,html[lang="km"] input,html[lang="km"] select,html[lang="km"] textarea,html[lang="km"] button{font-family:"Noto Sans Khmer","Khmer UI","Leelawadee UI","Khmer OS Battambang",system-ui,sans-serif}
+html[lang="km"] body{line-height:1.75}
+html[lang="km"] input,html[lang="km"] select,html[lang="km"] button{line-height:1.6}
+html[lang="km"] .rf{letter-spacing:0}
+.slip .sh{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;border-bottom:2px solid var(--ac);padding-bottom:10px;margin-bottom:12px}
+.slip h2{margin:0;font-size:20px}.slip .org{color:var(--mu);font-size:13px}
+.slip .rf{font-size:22px;font-weight:700;color:var(--ac);letter-spacing:.5px;white-space:nowrap}
+.slip table{width:100%;border-collapse:collapse;font-size:14px}
+.slip .kv td{padding:4px 0;vertical-align:top}.slip .kv td:first-child{color:var(--mu);width:130px}
+.slip .tb{margin-top:14px}
+.slip .tb th,.slip .tb td{border:1px solid var(--bd);padding:6px 8px;text-align:left}
+.slip .tb th{background:var(--ac2)}.slip .tb .n{text-align:right;width:56px}
+.slip .nt{margin-top:12px;font-size:14px}
+.slip .sig{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-top:48px}
+.slip .sig div{border-top:1px solid var(--tx);padding-top:6px;font-size:13px;color:var(--mu)}
+@media print{
+@page{margin:14mm}
+:root:root:root{--bg:#fff;--card:#fff;--tx:#000;--mu:#444;--bd:#999;--ac:#000;--ac2:#eee;color-scheme:light}
+body{background:#fff}
+.hd,#note,#vf,#lg,.noprint{display:none!important}
+.w{max-width:none;padding:0}
+#done .c{border:0;padding:0}
+}
 .hr{display:flex;align-items:center;justify-content:space-between;gap:12px}.hr img{height:84px;width:auto;flex:none;background:transparent}
 :root[data-theme="dark"] .hr img{filter:drop-shadow(0 0 1px #fff) drop-shadow(0 0 8px rgba(255,255,255,.55))}
 @media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .hr img{filter:drop-shadow(0 0 1px #fff) drop-shadow(0 0 8px rgba(255,255,255,.55))}}@media(max-width:560px){.hr img{height:60px}}
@@ -135,19 +174,24 @@ body{background:#fff}
 <div id="rl"></div>
 </div>
 <div id="vd" hidden>
-<div class="c"><div class="row"><div class="f" style="margin:0;min-width:180px"><label class="l" for="dm" data-i18n="d.month">Month</label><input id="dm" type="month"></div>
-<span><button id="drf" data-i18n="r.refresh">Refresh</button> <button class="p" id="dx" data-i18n="d.export">Download monthly report</button></span></div></div>
+<div class="c"><div class="g">
+<div class="f"><label class="l" for="dfrom" data-i18n="d.from">From date</label><input id="dfrom" type="date"></div>
+<div class="f"><label class="l" for="dto" data-i18n="d.to">To date</label><input id="dto" type="date"></div>
+</div>
+<div class="ch" id="dpre"><button class="chip" data-p="month" data-i18n="d.p.month">This month</button><button class="chip" data-p="last" data-i18n="d.p.last">Last month</button><button class="chip" data-p="90" data-i18n="d.p.90">Last 3 months</button><button class="chip" data-p="year" data-i18n="d.p.year">This year</button></div>
+<div class="row"><span class="mu" id="dcnt"></span><span><button id="drf" data-i18n="r.refresh">Refresh</button> <button class="p" id="dx" data-i18n="d.export">Download report</button></span></div></div>
 <div class="c"><div class="kp" id="dk"></div>
 <h3 class="h3" data-i18n="d.bydept">Requests by department</h3><div class="sc" id="dd"></div></div>
-<div class="c"><h3 class="h3" data-i18n="d.trend">Last 6 months – items requested per department</h3><div class="mu" style="margin-bottom:8px" data-i18n="d.trendnote">Each number is the count of item lines requested.</div><div class="sc" id="dtr"></div></div>
-<div class="c"><h3 class="h3" data-i18n="d.top">Most requested items this month</h3><div class="sc" id="dtp"></div></div>
+<div class="c"><h3 class="h3" data-i18n="d.urgent">Urgent requests by department</h3><div class="mu" style="margin-bottom:8px" id="dutop"></div><div class="sc" id="dug"></div></div>
+<div class="c"><h3 class="h3" data-i18n="d.trend">Last 6 months – items requested per department</h3><div class="mu" style="margin-bottom:8px" data-i18n="d.trendnote">Each number is the count of item lines requested. Months end at the “To date”.</div><div class="sc" id="dtr"></div></div>
+<div class="c"><h3 class="h3" data-i18n="d.top">Most requested items in this period</h3><div class="sc" id="dtp"></div></div>
 </div>
 <div id="done" hidden>
 <div class="msg noprint" id="doneMsg"></div>
 <div class="c slip" id="slip"></div>
 <div class="row noprint" style="justify-content:flex-start"><button class="p" id="prt" data-i18n="done.print">Print / Save as PDF</button><button id="newReq" data-i18n="done.new">New request</button></div>
 </div>
-<div class="mu noprint" style="text-align:center;margin:18px 0 6px"><span data-i18n="footer">Form version</span> 2026-11-08-m</div>
+<div class="mu noprint" style="text-align:center;margin:18px 0 6px"><span data-i18n="footer">Form version</span> 2026-11-08-n</div>
 
 </div>
 
@@ -411,41 +455,64 @@ $("rx").onclick=()=>{
   XLSX.writeFile(wb,"requests-"+new Date().toISOString().slice(0,10)+".xlsx");
 };
 
-/* ---------- dashboard (stock team): monthly report per department ---------- */
-const NOW=()=>new Date().toLocaleString("sv-SE",{timeZone:CFG.TIMEZONE||"Asia/Phnom_Penh"}).slice(0,7);
-$("dm").value=NOW();
+/* ---------- dashboard (stock team): report per department for a date range ---------- */
+const TODAY=()=>new Date().toLocaleString("sv-SE",{timeZone:CFG.TIMEZONE||"Asia/Phnom_Penh"}).slice(0,10);
+const ymd=d=>d.toISOString().slice(0,10);
+const U=(y,m,d)=>new Date(Date.UTC(y,m,d));
+function preset(p){
+  const [y,m]=TODAY().split("-").map(Number),td=TODAY();
+  if(p=="month")return [ymd(U(y,m-1,1)),td];
+  if(p=="last")return [ymd(U(y,m-2,1)),ymd(U(y,m-1,0))];
+  if(p=="90")return [ymd(U(y,m-3,1)),td];
+  return [ymd(U(y,0,1)),td];
+}
+function setPreset(p){const r=preset(p);$("dfrom").value=r[0];$("dto").value=r[1];drawDash()}
+$("dfrom").value=preset("month")[0];$("dto").value=preset("month")[1];
 const mkey=r=>String(r.time).slice(0,7);
 const qn=i=>Number(i.qty)||0;
 const fmt=n=>Number(n).toLocaleString("en-US",{maximumFractionDigits:2});
-const mlabel=(m,long)=>{const [y,mo]=m.split("-").map(Number);return new Date(Date.UTC(y,mo-1,1)).toLocaleDateString(LANG=="km"?"km-KH":"en-GB",{month:long?"long":"short",year:"numeric",timeZone:"UTC"})};
+const mlabel=m=>{const [y,mo]=m.split("-").map(Number);return new Date(Date.UTC(y,mo-1,1)).toLocaleDateString(LANG=="km"?"km-KH":"en-GB",{month:"short",year:"numeric",timeZone:"UTC"})};
 function monthsBack(m,n){const [y,mo]=m.split("-").map(Number),out=[];for(let k=n-1;k>=0;k--){const d=new Date(Date.UTC(y,mo-1-k,1));out.push(d.getUTCFullYear()+"-"+String(d.getUTCMonth()+1).padStart(2,"0"))}return out}
-function deptStats(rs){const o={};rs.forEach(r=>{const d=o[r.dept]=o[r.dept]||{req:0,lines:0,qty:0};d.req++;d.lines+=r.items.length;d.qty+=r.items.reduce((a,i)=>a+qn(i),0)});return o}
+function deptStats(rs){const o={};rs.forEach(r=>{const d=o[r.dept]=o[r.dept]||{req:0,lines:0,qty:0,urg:0};d.req++;d.lines+=r.items.length;d.qty+=r.items.reduce((a,i)=>a+qn(i),0);if(r.priority=="Urgent")d.urg++});return o}
 function topItems(rs){const o={};rs.forEach(r=>r.items.forEach(i=>{const k=i.code+"|"+i.name,x=o[k]=o[k]||{code:i.code,name:i.name,req:0,qty:0,units:{}};x.req++;x.qty+=qn(i);x.units[i.unit]=(x.units[i.unit]||0)+qn(i)}));return Object.values(o).sort((a,b)=>b.req-a.req||b.qty-a.qty)}
 const unitTxt=u=>Object.keys(u).map(k=>fmt(u[k])+" "+t("unit."+k,k)).join(" + ");
+const inRange=()=>{const a=$("dfrom").value,b=$("dto").value;return REQS.filter(r=>{const d=String(r.time).slice(0,10);return(!a||d>=a)&&(!b||d<=b)})};
 function drawDash(){
   if(!ISSTOCK)return;
-  const m=$("dm").value||NOW(),rs=REQS.filter(r=>mkey(r)==m),st=deptStats(rs);
+  const a=$("dfrom").value,b=$("dto").value;
+  if(a&&b&&a>b){$("dcnt").textContent=t("d.badrange","“From date” is after “To date”.");$("dk").innerHTML=$("dd").innerHTML=$("dug").innerHTML=$("dtr").innerHTML=$("dtp").innerHTML="";$("dutop").textContent="";return}
+  const rs=inRange(),st=deptStats(rs),none=`<div class="em">${esc(t("d.none","No requests in this period"))}</div>`;
+  $("dcnt").textContent=rs.length+" "+t("r.n","requests");
   const all=[...new Set(REQS.map(r=>r.dept))].sort();
-  const lines=rs.reduce((a,r)=>a+r.items.length,0),qty=rs.reduce((a,r)=>a+r.items.reduce((b,i)=>b+qn(i),0),0);
+  const lines=rs.reduce((x,r)=>x+r.items.length,0),qty=rs.reduce((x,r)=>x+r.items.reduce((y,i)=>y+qn(i),0),0),urg=rs.filter(r=>r.priority=="Urgent").length;
   const card=(v,l)=>`<div><b>${esc(fmt(v))}</b><span>${esc(l)}</span></div>`;
-  $("dk").innerHTML=card(rs.length,t("d.k.req","Requests"))+card(lines,t("d.k.lines","Items requested"))+card(qty,t("d.k.qty","Total quantity"))+card(rs.filter(r=>r.priority=="Urgent").length,t("d.k.urg","Urgent requests"))+card(rs.filter(r=>r.status=="Pending").length,t("d.k.pen","Still pending"));
-  const rows=all.map(d=>[d,st[d]||{req:0,lines:0,qty:0}]).sort((a,b)=>b[1].lines-a[1].lines||a[0].localeCompare(b[0])),mx=Math.max(1,...rows.map(r=>r[1].lines));
-  $("dd").innerHTML=rs.length?`<table class="dt"><thead><tr><th>${esc(t("r.dept","Department"))}</th><th class="n">${esc(t("d.k.req","Requests"))}</th><th class="n">${esc(t("d.k.lines","Items requested"))}</th><th class="n">${esc(t("d.k.qty","Total quantity"))}</th><th></th></tr></thead><tbody>${rows.map(([d,v])=>`<tr><td>${esc(d)}</td><td class="n">${v.req}</td><td class="n">${v.lines}</td><td class="n">${esc(fmt(v.qty))}</td><td><div class="bar"><i style="width:${Math.round(v.lines/mx*100)}%"></i></div></td></tr>`).join("")}</tbody><tfoot><tr><td>${esc(t("d.total","Total"))}</td><td class="n">${rs.length}</td><td class="n">${lines}</td><td class="n">${esc(fmt(qty))}</td><td></td></tr></tfoot></table>`:`<div class="em">${esc(t("d.none","No requests in this month"))}</div>`;
-  const ms=monthsBack(m,6),cnt={};REQS.forEach(r=>{const k=mkey(r);if(!ms.includes(k))return;const c=cnt[r.dept]=cnt[r.dept]||{};c[k]=(c[k]||0)+r.items.length});
-  const tot=ms.map(k=>all.reduce((a,d)=>a+((cnt[d]||{})[k]||0),0));
-  $("dtr").innerHTML=all.length?`<table class="dt"><thead><tr><th>${esc(t("r.dept","Department"))}</th>${ms.map(k=>`<th class="n${k==m?" sel":""}">${esc(mlabel(k))}</th>`).join("")}</tr></thead><tbody>${all.map(d=>`<tr><td>${esc(d)}</td>${ms.map(k=>`<td class="n${k==m?" sel":""}">${(cnt[d]||{})[k]||"–"}</td>`).join("")}</tr>`).join("")}</tbody><tfoot><tr><td>${esc(t("d.total","Total"))}</td>${tot.map((v,i)=>`<td class="n${ms[i]==m?" sel":""}">${v}</td>`).join("")}</tr></tfoot></table>`:"";
+  $("dk").innerHTML=card(rs.length,t("d.k.req","Requests"))+card(lines,t("d.k.lines","Items requested"))+card(qty,t("d.k.qty","Total quantity"))+card(urg,t("d.k.urg","Urgent requests"))+card(rs.filter(r=>r.status=="Pending").length,t("d.k.pen","Still pending"));
+  const E={req:0,lines:0,qty:0,urg:0};
+  const rows=all.map(d=>[d,st[d]||E]).sort((x,y)=>y[1].lines-x[1].lines||x[0].localeCompare(y[0])),mx=Math.max(1,...rows.map(r=>r[1].lines));
+  $("dd").innerHTML=rs.length?`<table class="dt"><thead><tr><th>${esc(t("r.dept","Department"))}</th><th class="n">${esc(t("d.k.req","Requests"))}</th><th class="n">${esc(t("d.k.lines","Items requested"))}</th><th class="n">${esc(t("d.k.qty","Total quantity"))}</th><th></th></tr></thead><tbody>${rows.map(([d,v])=>`<tr><td>${esc(d)}</td><td class="n">${v.req}</td><td class="n">${v.lines}</td><td class="n">${esc(fmt(v.qty))}</td><td><div class="bar"><i style="width:${Math.round(v.lines/mx*100)}%"></i></div></td></tr>`).join("")}</tbody><tfoot><tr><td>${esc(t("d.total","Total"))}</td><td class="n">${rs.length}</td><td class="n">${lines}</td><td class="n">${esc(fmt(qty))}</td><td></td></tr></tfoot></table>`:none;
+  /* urgent requests per department */
+  const ur=all.map(d=>[d,st[d]||E]).sort((x,y)=>y[1].urg-x[1].urg||y[1].req-x[1].req||x[0].localeCompare(y[0])),um=Math.max(1,...ur.map(r=>r[1].urg));
+  $("dutop").textContent=urg?t("d.urgtop","Most urgent requests: {d} ({n} of {t})",{d:ur[0][0],n:ur[0][1].urg,t:urg}):"";
+  $("dug").innerHTML=rs.length?`<table class="dt"><thead><tr><th>${esc(t("r.dept","Department"))}</th><th class="n">${esc(t("d.k.urg","Urgent requests"))}</th><th class="n">${esc(t("d.k.req","Requests"))}</th><th class="n">${esc(t("d.pct","% urgent"))}</th><th></th></tr></thead><tbody>${ur.map(([d,v])=>`<tr><td>${esc(d)}</td><td class="n"><b>${v.urg}</b></td><td class="n">${v.req}</td><td class="n">${v.req?Math.round(v.urg/v.req*100)+"%":"–"}</td><td><div class="bar"><i style="width:${Math.round(v.urg/um*100)}%;background:var(--wa)"></i></div></td></tr>`).join("")}</tbody><tfoot><tr><td>${esc(t("d.total","Total"))}</td><td class="n">${urg}</td><td class="n">${rs.length}</td><td class="n">${rs.length?Math.round(urg/rs.length*100)+"%":"–"}</td><td></td></tr></tfoot></table>`:none;
+  /* last 6 months, ending at the month of the To date */
+  const endM=(b||TODAY()).slice(0,7),ms=monthsBack(endM,6),lo=(a||"0").slice(0,7),cnt={};
+  REQS.forEach(r=>{const k=mkey(r);if(!ms.includes(k))return;const c=cnt[r.dept]=cnt[r.dept]||{};c[k]=(c[k]||0)+r.items.length});
+  const sel=k=>k>=lo&&k<=endM?" sel":"",tot=ms.map(k=>all.reduce((x,d)=>x+((cnt[d]||{})[k]||0),0));
+  $("dtr").innerHTML=all.length?`<table class="dt"><thead><tr><th>${esc(t("r.dept","Department"))}</th>${ms.map(k=>`<th class="n${sel(k)}">${esc(mlabel(k))}</th>`).join("")}</tr></thead><tbody>${all.map(d=>`<tr><td>${esc(d)}</td>${ms.map(k=>`<td class="n${sel(k)}">${(cnt[d]||{})[k]||"–"}</td>`).join("")}</tr>`).join("")}</tbody><tfoot><tr><td>${esc(t("d.total","Total"))}</td>${tot.map((v,i)=>`<td class="n${sel(ms[i])}">${v}</td>`).join("")}</tr></tfoot></table>`:"";
   const tp=topItems(rs).slice(0,10);
-  $("dtp").innerHTML=tp.length?`<table class="dt"><thead><tr><th>${esc(t("slip.item","Item"))}</th><th class="n">${esc(t("d.k.req","Requests"))}</th><th class="n">${esc(t("d.k.qty","Total quantity"))}</th></tr></thead><tbody>${tp.map(x=>`<tr><td>${esc(x.name)}<div class="mu">${esc(x.code)}</div></td><td class="n">${x.req}</td><td class="n">${esc(unitTxt(x.units))}</td></tr>`).join("")}</tbody></table>`:`<div class="em">${esc(t("d.none","No requests in this month"))}</div>`;
+  $("dtp").innerHTML=tp.length?`<table class="dt"><thead><tr><th>${esc(t("slip.item","Item"))}</th><th class="n">${esc(t("d.k.req","Requests"))}</th><th class="n">${esc(t("d.k.qty","Total quantity"))}</th></tr></thead><tbody>${tp.map(x=>`<tr><td>${esc(x.name)}<div class="mu">${esc(x.code)}</div></td><td class="n">${x.req}</td><td class="n">${esc(unitTxt(x.units))}</td></tr>`).join("")}</tbody></table>`:none;
 }
-$("dm").oninput=drawDash;$("dm").onchange=drawDash;$("drf").onclick=()=>loadReqs();
+["dfrom","dto"].forEach(id=>{$(id).oninput=drawDash;$(id).onchange=drawDash});
+$("dpre").onclick=e=>{const p=e.target.dataset.p;if(p)setPreset(p)};
+$("drf").onclick=()=>loadReqs();
 $("dx").onclick=()=>{
-  const m=$("dm").value||NOW(),rs=REQS.filter(r=>mkey(r)==m);if(!rs.length||!window.XLSX)return;
-  const st=deptStats(rs),ds=Object.keys(st).sort((a,b)=>st[b].lines-st[a].lines);
-  const sum=[["Month","Department","Requests","Items requested (lines)","Total quantity"]].concat(ds.map(d=>[m,d,st[d].req,st[d].lines,st[d].qty]),[[m,"TOTAL",rs.length,ds.reduce((a,d)=>a+st[d].lines,0),ds.reduce((a,d)=>a+st[d].qty,0)]]);
-  const det=[["Month","Department","Item code","Item name","Requests","Quantity","Unit"]];
-  ds.forEach(d=>{const o={};rs.filter(r=>r.dept==d).forEach(r=>r.items.forEach(i=>{const k=i.code+"|"+i.name+"|"+i.unit,x=o[k]=o[k]||[i.code,i.name,0,0,i.unit];x[2]++;x[3]+=qn(i)}));Object.values(o).sort((a,b)=>b[2]-a[2]).forEach(x=>det.push([m,d,x[0],x[1],x[2],x[3],x[4]]))});
+  const a=$("dfrom").value,b=$("dto").value,rs=inRange();if(!rs.length||!window.XLSX||(a&&b&&a>b))return;
+  const st=deptStats(rs),ds=Object.keys(st).sort((x,y)=>st[y].lines-st[x].lines),rng=(a||"start")+" to "+(b||"today");
+  const sum=[["From","To","Department","Requests","Items requested (lines)","Total quantity","Urgent requests","% urgent"]].concat(ds.map(d=>[a,b,d,st[d].req,st[d].lines,st[d].qty,st[d].urg,st[d].req?Math.round(st[d].urg/st[d].req*100)/100:0]),[[a,b,"TOTAL",rs.length,ds.reduce((x,d)=>x+st[d].lines,0),ds.reduce((x,d)=>x+st[d].qty,0),ds.reduce((x,d)=>x+st[d].urg,0),""]]);
+  const det=[["From","To","Department","Item code","Item name","Requests","Quantity","Unit"]];
+  ds.forEach(d=>{const o={};rs.filter(r=>r.dept==d).forEach(r=>r.items.forEach(i=>{const k=i.code+"|"+i.name+"|"+i.unit,x=o[k]=o[k]||[i.code,i.name,0,0,i.unit];x[2]++;x[3]+=qn(i)}));Object.values(o).sort((x,y)=>y[2]-x[2]).forEach(x=>det.push([a,b,d,x[0],x[1],x[2],x[3],x[4]]))});
   const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(sum),"By department");XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(det),"Items by department");
-  XLSX.writeFile(wb,"monthly-report-"+m+".xlsx");
+  XLSX.writeFile(wb,"report-"+rng.replace(/ /g,"_")+".xlsx");
 };
 
 /* ---------- language (English / Khmer) ---------- */
