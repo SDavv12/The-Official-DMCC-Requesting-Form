@@ -49,6 +49,8 @@ button:disabled{opacity:.5;cursor:default}
 .hid{display:none}
 .ldg{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
 .msg button{margin-left:6px;padding:3px 10px}
+[hidden]{display:none!important}
+.ub{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:0 0 12px;font-size:14px;color:var(--mu)}
 .slip .sh{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;border-bottom:2px solid var(--ac);padding-bottom:10px;margin-bottom:12px}
 .slip h2{margin:0;font-size:20px}.slip .org{color:var(--mu);font-size:13px}
 .slip .rf{font-size:22px;font-weight:700;color:var(--ac);letter-spacing:.5px;white-space:nowrap}
@@ -64,7 +66,7 @@ button:disabled{opacity:.5;cursor:default}
 @page{margin:14mm}
 :root:root:root{--bg:#fff;--card:#fff;--tx:#000;--mu:#444;--bd:#999;--ac:#000;--ac2:#eee;color-scheme:light}
 body{background:#fff}
-.hd,#note,#vf,.noprint{display:none!important}
+.hd,#note,#vf,#lg,.noprint{display:none!important}
 .w{max-width:none;padding:0}
 #done .c{border:0;padding:0}
 }
@@ -73,7 +75,16 @@ body{background:#fff}
 <div class="hd"><h1>Item Request Form</h1><div class="mu">Select the items you need, enter quantities, and submit. Fields marked <span class="rq">*</span> are required.</div></div>
 <div id="note"></div>
 
-<div id="vf">
+<div id="lg" hidden>
+<div class="c">
+<div class="f"><label class="l" for="luI">Username</label><input id="luI" autocomplete="username" autocapitalize="none" spellcheck="false" placeholder="Your department username"></div>
+<div class="f" style="margin-top:12px"><label class="l" for="lpI">Password</label><input id="lpI" type="password" autocomplete="current-password" placeholder="Password"></div>
+<div class="row" style="margin-top:14px;justify-content:flex-start"><button class="p" id="lgb">Log in</button></div>
+<div class="err" id="lge"></div>
+</div></div>
+<div class="ub noprint" id="ub" hidden><span>Logged in as <b id="ubU"></b> (<span id="ubD"></span>)</span><button id="lgo">Log out</button></div>
+
+<div id="vf" hidden>
 <div class="c"><div class="g">
 <div class="f"><label class="l" for="nmI">Your name <span class="rq">*</span></label><input id="nmI" autocomplete="name" placeholder="Full name"></div>
 <div class="f"><label class="l" for="dpI">Department / ward <span class="rq">*</span></label>
@@ -99,7 +110,7 @@ body{background:#fff}
 <div class="c slip" id="slip"></div>
 <div class="row noprint" style="justify-content:flex-start"><button class="p" id="prt">Print / Save as PDF</button><button id="newReq">New request</button></div>
 </div>
-<div class="mu noprint" style="text-align:center;margin:18px 0 6px">Form version 2026-11-08-d</div>
+<div class="mu noprint" style="text-align:center;margin:18px 0 6px">Form version 2026-11-08-e</div>
 
 </div>
 
@@ -113,13 +124,12 @@ const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",
 const LABDEPT=CFG.LAB_DEPARTMENT||"Laboratory";
 if(CFG.ORG_NAME)document.querySelector(".hd h1").insertAdjacentHTML("beforebegin",`<div class="mu" style="font-weight:600;margin-bottom:2px">${esc(CFG.ORG_NAME)}</div>`);
 const UNITS=CFG.UNITS||["pcs"];
-const isLab=()=>$("dpI").value==LABDEPT;
+const isLab=()=>$("dpI").value.trim().toLowerCase()==LABDEPT.toLowerCase();
 
 let ITEMS=[],LAB=[],CATS=["All"];
 let cat="All",cart=[],shown=[];
 
 /* ---------- form setup ---------- */
-$("dpI").innerHTML='<option value="">Choose…</option>'+(CFG.DEPARTMENTS||[]).map(d=>`<option>${esc(d)}</option>`).join("");
 
 /* ---------- load items from the Excel files ---------- */
 function ensureXLSX(){
@@ -176,7 +186,7 @@ async function loadItems(){
   const cs=[];(CFG.CATEGORY_ORDER||[]).forEach(c=>{if(ITEMS.some(i=>i[2]==c))cs.push(c)});
   ITEMS.forEach(i=>{if(!cs.includes(i[2]))cs.push(i[2])});
   CATS=["All"].concat(cs);
-  if(!CATS.includes(cat))cat="All";
+  if(cat!="Lab"&&!CATS.includes(cat))cat="All";
   drawChips();list();
   $("sub").disabled=false;
   if(problems.length){
@@ -206,7 +216,7 @@ function draw(){
 $("cart").oninput=e=>{const k=e.target.dataset.k;if(k==null)return;cart[k][e.target.dataset.f]=e.target.dataset.f=="q"?Math.max(0,parseInt(e.target.value)||0):e.target.value};
 $("cart").onclick=e=>{const r=e.target.dataset.r;if(r==null)return;cart.splice(+r,1);draw();list()};
 
-function reset(){cart=[];$("nmI").value="";$("dpI").value="";$("ntI").value="";$("prI").value="Normal";$("er").textContent="";cat="All";drawChips();draw();list()}
+function reset(){cart=[];$("nmI").value="";$("ntI").value="";$("prI").value="Normal";$("er").textContent="";cat="All";drawChips();draw();list()}
 $("clr").onclick=()=>{if(!cart.length||confirm("Clear everything?"))reset()};
 
 $("dpI").onchange=()=>{let m="";
@@ -220,33 +230,42 @@ $("note").onclick=e=>{if(e.target.id=="retry")loadItems()};
 /* ---------- submit -> Google Sheet ---------- */
 const SHEET_URL=CFG.SHEET_URL||"";
 let last={key:"",token:""};
+function errText(e,pre){const m=String(e&&e.message||e);
+  return m.startsWith("SERVER:")?(pre||"")+m.slice(7)
+    :m=="BAD_REPLY"?"The Google Sheet link is not answering correctly. Please tell the admin (Apps Script must be deployed as a Web app with access set to “Anyone”)."
+    :"Couldn’t reach the Google Sheet. Please check your internet and try again. If it keeps happening, tell the admin."}
+async function api(body){
+  const r=await fetch(SHEET_URL,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify(body)});
+  const t=await r.text();let j;
+  try{j=JSON.parse(t)}catch(_){console.error("Non-JSON reply from SHEET_URL:",t.slice(0,300));throw new Error("BAD_REPLY")}
+  return j;
+}
 $("sub").onclick=async()=>{
   const nm=$("nmI").value.trim(),dp=$("dpI").value;
-  if(!nm||!dp)return $("er").textContent="Please fill in your name and department.";
+  if(!SESS)return showLogin("Please log in.");
+  if(!nm)return $("er").textContent="Please fill in your name.";
   if(!cart.length)return $("er").textContent="Please add at least one item.";
   if(cart.some(x=>x.q<1))return $("er").textContent="Every item needs a quantity of at least 1.";
   if(!SHEET_URL||SHEET_URL.startsWith("PASTE"))return $("er").textContent="This form isn’t connected to a Google Sheet yet (SHEET_URL in config.js is not set).";
   $("er").textContent="";
+  // dept is only used for the printed slip: the sheet always uses the department of the logged-in account
   const rec={name:nm,dept:dp,priority:$("prI").value,notes:$("ntI").value.trim(),items:cart.map(x=>({code:x.c,name:x.n,qty:x.q,unit:x.u}))};
   const key=JSON.stringify(rec);
   if(last.key!==key)last={key,token:"T"+Date.now().toString(36)+Math.random().toString(36).slice(2,8)};
   rec.token=last.token;   // lets the sheet ignore an accidental double-send
+  rec.session=SESS.token;
   $("sub").disabled=true;$("sub").textContent="Submitting…";
   try{
-    const r=await fetch(SHEET_URL,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify(rec)});
-    const t=await r.text();let j;
-    try{j=JSON.parse(t)}catch(_){console.error("Non-JSON reply from SHEET_URL:",t.slice(0,300));throw new Error("BAD_REPLY")}
-    if(!j.ok)throw new Error("SERVER:"+(j.error||"unknown error"));
+    const j=await api(rec);
+    if(!j.ok){if(j.auth)throw new Error("AUTH");throw new Error("SERVER:"+(j.error||"unknown error"))}
     const ref=j.ref,snap=rec;last={key:"",token:""};reset();note("");showDone(snap,ref,j.time);
   }catch(e){
     console.error(e);
-    const m=String(e&&e.message||e);
-    $("er").textContent=m.startsWith("SERVER:")?"The Google Sheet reported a problem: "+m.slice(7)
-      :m=="BAD_REPLY"?"The Google Sheet link is not answering correctly. Please tell the admin (Apps Script must be deployed as a Web app with access set to “Anyone”)."
-      :"Couldn’t reach the Google Sheet. Please check your internet and try again. If it keeps happening, tell the admin."}
+    if(String(e&&e.message)=="AUTH")showLogin("Your login has expired. Please log in again. Your request is still here.");
+    else $("er").textContent=errText(e,"The Google Sheet reported a problem: ");
+  }
   $("sub").disabled=false;$("sub").textContent="Submit request";
 };
-
 
 /* ---------- confirmation slip (print / save as PDF) ---------- */
 function showDone(r,ref,time){
@@ -263,5 +282,40 @@ ${r.notes?`<div class="nt"><b>Notes:</b> ${esc(r.notes)}</div>`:""}
 $("prt").onclick=()=>window.print();
 $("newReq").onclick=()=>{$("done").hidden=true;$("vf").hidden=false;document.title="Item Request Form";scrollTo(0,0)};
 
+/* ---------- login (department accounts are checked by the Google script) ---------- */
+const SK="irf-session";
+const getSess=()=>{try{return JSON.parse(sessionStorage.getItem(SK)||"null")}catch(e){return null}};
+const setSess=v=>{try{v?sessionStorage.setItem(SK,JSON.stringify(v)):sessionStorage.removeItem(SK)}catch(e){}};
+let SESS=getSess();
+function showLogin(msg){SESS=null;setSess(null);$("vf").hidden=true;$("done").hidden=true;$("ub").hidden=true;$("lg").hidden=false;$("lge").textContent=msg||"";$("lpI").value="";scrollTo(0,0)}
+function showApp(){
+  $("lg").hidden=true;$("ub").hidden=false;$("ubU").textContent=SESS.user;$("ubD").textContent=SESS.dept;
+  $("dpI").innerHTML=`<option>${esc(SESS.dept)}</option>`;$("dpI").value=SESS.dept;$("dpI").disabled=true;   // department comes from the account
+  $("done").hidden=true;$("vf").hidden=false;
+  if(isLab())cat="Lab";else{cart=cart.filter(x=>!LAB.some(l=>l[0]==x.c&&l[1]==x.n));if(cat=="Lab")cat="All"}
+  drawChips();draw();list();
+}
+$("lgb").onclick=async()=>{
+  const u=$("luI").value.trim(),p=$("lpI").value;
+  if(!u||!p)return $("lge").textContent="Enter your username and password.";
+  if(!SHEET_URL||SHEET_URL.startsWith("PASTE"))return $("lge").textContent="This form isn’t connected to a Google Sheet yet (SHEET_URL in config.js is not set).";
+  $("lgb").disabled=true;$("lgb").textContent="Checking…";$("lge").textContent="";
+  try{
+    const j=await api({action:"login",username:u,password:p});
+    if(!j.ok)throw new Error("SERVER:"+(j.error||"Login failed"));
+    SESS={token:j.token,dept:j.dept,user:j.user};setSess(SESS);
+    $("luI").value="";$("lpI").value="";showApp();
+  }catch(e){console.error(e);$("lge").textContent=errText(e,"")}
+  $("lgb").disabled=false;$("lgb").textContent="Log in";
+};
+$("luI").onkeydown=e=>{if(e.key==="Enter")$("lpI").focus()};
+$("lpI").onkeydown=e=>{if(e.key==="Enter")$("lgb").click()};
+$("lgo").onclick=()=>{
+  if(cart.length&&!confirm("Log out? Your current request will be cleared."))return;
+  if(SESS&&SHEET_URL)api({action:"logout",session:SESS.token}).catch(()=>{});
+  reset();note("");document.title="Item Request Form";showLogin("");
+};
+
 drawChips();draw();loadItems();
+SESS?showApp():showLogin("");
 </script></body></html>
