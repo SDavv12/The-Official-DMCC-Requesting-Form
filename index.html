@@ -47,6 +47,16 @@ button:disabled{opacity:.5;cursor:default}
 .rc.dn{opacity:.6}.rc ul{margin:8px 0 0;padding-left:18px}
 .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:space-between}
 .hid{display:none}
+.kp{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin:4px 0 14px}
+.kp div{border:1px solid var(--bd);border-radius:10px;padding:10px 12px;background:var(--bg)}
+.kp b{display:block;font-size:24px;line-height:1.2;color:var(--ac);font-variant-numeric:tabular-nums}.kp span{font-size:12px;color:var(--mu)}
+.dt{width:100%;border-collapse:collapse;font-size:14px}.dt th,.dt td{padding:7px 8px;border-bottom:1px solid var(--bd);text-align:left;vertical-align:middle}
+.dt th{font-size:12px;color:var(--mu);font-weight:600;white-space:nowrap}.dt .n{text-align:right;font-variant-numeric:tabular-nums}
+.dt tr:last-child td{border-bottom:0}.dt tfoot td{font-weight:700;border-top:2px solid var(--bd)}
+.bar{height:10px;border-radius:99px;background:var(--ac2);min-width:70px;overflow:hidden}.bar i{display:block;height:100%;background:var(--ac);border-radius:99px}
+.sc{overflow-x:auto}.dt .sel{background:var(--ac2)}
+.h3{margin:0 0 8px;font-size:16px}
+
 .ldg{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
 .msg button{margin-left:6px;padding:3px 10px}
 [hidden]{display:none!important}
@@ -75,7 +85,9 @@ body{background:#fff}
 .w{max-width:none;padding:0}
 #done .c{border:0;padding:0}
 }
-.hr{display:flex;align-items:center;justify-content:space-between;gap:12px}.hr img{height:84px;width:auto;flex:none;background:#fff;border-radius:10px;padding:4px}@media(max-width:560px){.hr img{height:60px}}
+.hr{display:flex;align-items:center;justify-content:space-between;gap:12px}.hr img{height:84px;width:auto;flex:none;background:transparent}
+:root[data-theme="dark"] .hr img{filter:drop-shadow(0 0 1px #fff) drop-shadow(0 0 8px rgba(255,255,255,.55))}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .hr img{filter:drop-shadow(0 0 1px #fff) drop-shadow(0 0 8px rgba(255,255,255,.55))}}@media(max-width:560px){.hr img{height:60px}}
 </style></head>
 <body><div class="w">
 <div class="hd"><div class="lang noprint" id="lang"><button class="chip" data-l="en">English</button><button class="chip" data-l="km">ខ្មែរ</button></div><div class="hr"><div><h1 data-i18n="title">Item Request Form</h1><div class="mu" data-i18n-html="subtitle">Select the items you need, enter quantities, and submit. Fields marked <span class="rq">*</span> are required.</div></div><img src="logo.png" alt="Domrey Mother &amp; Child Clinic"></div></div>
@@ -111,7 +123,7 @@ body{background:#fff}
 <div class="err" id="er"></div>
 </div>
 
-<div class="tabs noprint" id="tabs" hidden><button id="tNew" data-i18n="tab.new">New request</button><button id="tReq" data-i18n="tab.req">Requests</button></div>
+<div class="tabs noprint" id="tabs" hidden><button id="tNew" data-i18n="tab.new">New request</button><button id="tReq" data-i18n="tab.req">Requests</button><button id="tDash" data-i18n="tab.dash" hidden>Dashboard</button></div>
 <div id="vr" hidden>
 <div class="c"><div class="g">
 <div class="f"><label class="l" for="rq" data-i18n="r.search">Search</label><input id="rq" type="search" placeholder="Reference, name, item…"></div>
@@ -122,12 +134,20 @@ body{background:#fff}
 <div class="row"><span class="mu" id="rcnt"></span><span><button id="rrf" data-i18n="r.refresh">Refresh</button> <button class="p" id="rx" data-i18n="r.export">Download Excel</button></span></div></div>
 <div id="rl"></div>
 </div>
+<div id="vd" hidden>
+<div class="c"><div class="row"><div class="f" style="margin:0;min-width:180px"><label class="l" for="dm" data-i18n="d.month">Month</label><input id="dm" type="month"></div>
+<span><button id="drf" data-i18n="r.refresh">Refresh</button> <button class="p" id="dx" data-i18n="d.export">Download monthly report</button></span></div></div>
+<div class="c"><div class="kp" id="dk"></div>
+<h3 class="h3" data-i18n="d.bydept">Requests by department</h3><div class="sc" id="dd"></div></div>
+<div class="c"><h3 class="h3" data-i18n="d.trend">Last 6 months – items requested per department</h3><div class="mu" style="margin-bottom:8px" data-i18n="d.trendnote">Each number is the count of item lines requested.</div><div class="sc" id="dtr"></div></div>
+<div class="c"><h3 class="h3" data-i18n="d.top">Most requested items this month</h3><div class="sc" id="dtp"></div></div>
+</div>
 <div id="done" hidden>
 <div class="msg noprint" id="doneMsg"></div>
 <div class="c slip" id="slip"></div>
 <div class="row noprint" style="justify-content:flex-start"><button class="p" id="prt" data-i18n="done.print">Print / Save as PDF</button><button id="newReq" data-i18n="done.new">New request</button></div>
 </div>
-<div class="mu noprint" style="text-align:center;margin:18px 0 6px"><span data-i18n="footer">Form version</span> 2026-11-08-k</div>
+<div class="mu noprint" style="text-align:center;margin:18px 0 6px"><span data-i18n="footer">Form version</span> 2026-11-08-m</div>
 
 </div>
 
@@ -319,11 +339,11 @@ const SK="irf-session";
 const getSess=()=>{try{return JSON.parse(sessionStorage.getItem(SK)||"null")}catch(e){return null}};
 const setSess=v=>{try{v?sessionStorage.setItem(SK,JSON.stringify(v)):sessionStorage.removeItem(SK)}catch(e){}};
 let SESS=getSess();
-function showLogin(msg){SESS=null;setSess(null);$("vf").hidden=true;$("done").hidden=true;$("ub").hidden=true;$("tabs").hidden=true;$("vr").hidden=true;$("lg").hidden=false;$("lge").textContent=msg||"";$("lpI").value="";scrollTo(0,0)}
+function showLogin(msg){SESS=null;setSess(null);$("vf").hidden=true;$("done").hidden=true;$("ub").hidden=true;$("tabs").hidden=true;$("vr").hidden=true;$("vd").hidden=true;$("lg").hidden=false;$("lge").textContent=msg||"";$("lpI").value="";scrollTo(0,0)}
 function showApp(){
   $("lg").hidden=true;$("ub").hidden=false;$("ubU").textContent=SESS.user;$("ubD").textContent=SESS.dept;
   $("dpI").innerHTML=`<option>${esc(SESS.dept)}</option>`;$("dpI").value=SESS.dept;$("dpI").disabled=true;   // department comes from the account
-  const st=/^(stock|admin)$/i.test(SESS.role||"");$("tabs").hidden=!st;setView(st?"r":"n");   // only the stock team gets the Requests tab
+  const st=/^(stock|admin)$/i.test(SESS.role||"");$("tabs").hidden=!st;$("tDash").hidden=!st;setView(st?"d":"n");   // only the stock team gets the Requests tab
   cart=cart.filter(x=>!foreign(x));if(deptCat())cat=deptCat();else if(cat in DL)cat="All";
   drawChips();draw();list();
 }
@@ -350,8 +370,8 @@ $("lgo").onclick=()=>{
 
 /* ---------- requests: dashboard / status / history / Excel export ---------- */
 let REQS=[],RSTAT=["Pending","Approved","Issued","Completed"],ISSTOCK=false,rst="All";
-function setView(v){$("vf").hidden=v!="n";$("vr").hidden=v!="r";$("done").hidden=true;$("tNew").classList.toggle("on",v=="n");$("tReq").classList.toggle("on",v=="r");if(v=="r")loadReqs();setTitle()}
-$("tNew").onclick=()=>setView("n");$("tReq").onclick=()=>setView("r");$("rrf").onclick=()=>loadReqs();
+function setView(v){$("vf").hidden=v!="n";$("vr").hidden=v!="r";$("vd").hidden=v!="d";$("done").hidden=true;$("tNew").classList.toggle("on",v=="n");$("tReq").classList.toggle("on",v=="r");$("tDash").classList.toggle("on",v=="d");if(v=="r"||v=="d")loadReqs();setTitle()}
+$("tNew").onclick=()=>setView("n");$("tReq").onclick=()=>setView("r");$("tDash").onclick=()=>setView("d");$("rrf").onclick=()=>loadReqs();
 async function rcall(body){
   const j=await api(Object.assign({session:SESS.token},body));
   if(!j.ok){if(j.auth){showLogin(t("e.expired","Your login has expired. Please log in again. Your request is still here."));return null}throw new Error("SERVER:"+(j.error||"unknown error"))}
@@ -363,7 +383,7 @@ async function loadReqs(){
     REQS=j.requests;ISSTOCK=j.stock;RSTAT=j.statuses;
     const cur=$("rd").value,ds=[...new Set(REQS.map(r=>r.dept))].sort();
     $("rd").innerHTML=`<option value="">${esc(t("r.alld","All departments"))}</option>`+ds.map(d=>`<option${d==cur?" selected":""}>${esc(d)}</option>`).join("");
-    $("rdw").hidden=!ISSTOCK;drawReqs();
+    $("rdw").hidden=!ISSTOCK;drawReqs();drawDash();
   }catch(e){console.error(e);$("rl").innerHTML=`<div class="err">${esc(errText(e,""))}</div>`}
 }
 const rf=()=>{const q=$("rq").value.trim().toLowerCase(),d=$("rd").value,a=$("ra").value,b=$("rb").value;
@@ -391,6 +411,43 @@ $("rx").onclick=()=>{
   XLSX.writeFile(wb,"requests-"+new Date().toISOString().slice(0,10)+".xlsx");
 };
 
+/* ---------- dashboard (stock team): monthly report per department ---------- */
+const NOW=()=>new Date().toLocaleString("sv-SE",{timeZone:CFG.TIMEZONE||"Asia/Phnom_Penh"}).slice(0,7);
+$("dm").value=NOW();
+const mkey=r=>String(r.time).slice(0,7);
+const qn=i=>Number(i.qty)||0;
+const fmt=n=>Number(n).toLocaleString("en-US",{maximumFractionDigits:2});
+const mlabel=(m,long)=>{const [y,mo]=m.split("-").map(Number);return new Date(Date.UTC(y,mo-1,1)).toLocaleDateString(LANG=="km"?"km-KH":"en-GB",{month:long?"long":"short",year:"numeric",timeZone:"UTC"})};
+function monthsBack(m,n){const [y,mo]=m.split("-").map(Number),out=[];for(let k=n-1;k>=0;k--){const d=new Date(Date.UTC(y,mo-1-k,1));out.push(d.getUTCFullYear()+"-"+String(d.getUTCMonth()+1).padStart(2,"0"))}return out}
+function deptStats(rs){const o={};rs.forEach(r=>{const d=o[r.dept]=o[r.dept]||{req:0,lines:0,qty:0};d.req++;d.lines+=r.items.length;d.qty+=r.items.reduce((a,i)=>a+qn(i),0)});return o}
+function topItems(rs){const o={};rs.forEach(r=>r.items.forEach(i=>{const k=i.code+"|"+i.name,x=o[k]=o[k]||{code:i.code,name:i.name,req:0,qty:0,units:{}};x.req++;x.qty+=qn(i);x.units[i.unit]=(x.units[i.unit]||0)+qn(i)}));return Object.values(o).sort((a,b)=>b.req-a.req||b.qty-a.qty)}
+const unitTxt=u=>Object.keys(u).map(k=>fmt(u[k])+" "+t("unit."+k,k)).join(" + ");
+function drawDash(){
+  if(!ISSTOCK)return;
+  const m=$("dm").value||NOW(),rs=REQS.filter(r=>mkey(r)==m),st=deptStats(rs);
+  const all=[...new Set(REQS.map(r=>r.dept))].sort();
+  const lines=rs.reduce((a,r)=>a+r.items.length,0),qty=rs.reduce((a,r)=>a+r.items.reduce((b,i)=>b+qn(i),0),0);
+  const card=(v,l)=>`<div><b>${esc(fmt(v))}</b><span>${esc(l)}</span></div>`;
+  $("dk").innerHTML=card(rs.length,t("d.k.req","Requests"))+card(lines,t("d.k.lines","Items requested"))+card(qty,t("d.k.qty","Total quantity"))+card(rs.filter(r=>r.priority=="Urgent").length,t("d.k.urg","Urgent requests"))+card(rs.filter(r=>r.status=="Pending").length,t("d.k.pen","Still pending"));
+  const rows=all.map(d=>[d,st[d]||{req:0,lines:0,qty:0}]).sort((a,b)=>b[1].lines-a[1].lines||a[0].localeCompare(b[0])),mx=Math.max(1,...rows.map(r=>r[1].lines));
+  $("dd").innerHTML=rs.length?`<table class="dt"><thead><tr><th>${esc(t("r.dept","Department"))}</th><th class="n">${esc(t("d.k.req","Requests"))}</th><th class="n">${esc(t("d.k.lines","Items requested"))}</th><th class="n">${esc(t("d.k.qty","Total quantity"))}</th><th></th></tr></thead><tbody>${rows.map(([d,v])=>`<tr><td>${esc(d)}</td><td class="n">${v.req}</td><td class="n">${v.lines}</td><td class="n">${esc(fmt(v.qty))}</td><td><div class="bar"><i style="width:${Math.round(v.lines/mx*100)}%"></i></div></td></tr>`).join("")}</tbody><tfoot><tr><td>${esc(t("d.total","Total"))}</td><td class="n">${rs.length}</td><td class="n">${lines}</td><td class="n">${esc(fmt(qty))}</td><td></td></tr></tfoot></table>`:`<div class="em">${esc(t("d.none","No requests in this month"))}</div>`;
+  const ms=monthsBack(m,6),cnt={};REQS.forEach(r=>{const k=mkey(r);if(!ms.includes(k))return;const c=cnt[r.dept]=cnt[r.dept]||{};c[k]=(c[k]||0)+r.items.length});
+  const tot=ms.map(k=>all.reduce((a,d)=>a+((cnt[d]||{})[k]||0),0));
+  $("dtr").innerHTML=all.length?`<table class="dt"><thead><tr><th>${esc(t("r.dept","Department"))}</th>${ms.map(k=>`<th class="n${k==m?" sel":""}">${esc(mlabel(k))}</th>`).join("")}</tr></thead><tbody>${all.map(d=>`<tr><td>${esc(d)}</td>${ms.map(k=>`<td class="n${k==m?" sel":""}">${(cnt[d]||{})[k]||"–"}</td>`).join("")}</tr>`).join("")}</tbody><tfoot><tr><td>${esc(t("d.total","Total"))}</td>${tot.map((v,i)=>`<td class="n${ms[i]==m?" sel":""}">${v}</td>`).join("")}</tr></tfoot></table>`:"";
+  const tp=topItems(rs).slice(0,10);
+  $("dtp").innerHTML=tp.length?`<table class="dt"><thead><tr><th>${esc(t("slip.item","Item"))}</th><th class="n">${esc(t("d.k.req","Requests"))}</th><th class="n">${esc(t("d.k.qty","Total quantity"))}</th></tr></thead><tbody>${tp.map(x=>`<tr><td>${esc(x.name)}<div class="mu">${esc(x.code)}</div></td><td class="n">${x.req}</td><td class="n">${esc(unitTxt(x.units))}</td></tr>`).join("")}</tbody></table>`:`<div class="em">${esc(t("d.none","No requests in this month"))}</div>`;
+}
+$("dm").oninput=drawDash;$("dm").onchange=drawDash;$("drf").onclick=()=>loadReqs();
+$("dx").onclick=()=>{
+  const m=$("dm").value||NOW(),rs=REQS.filter(r=>mkey(r)==m);if(!rs.length||!window.XLSX)return;
+  const st=deptStats(rs),ds=Object.keys(st).sort((a,b)=>st[b].lines-st[a].lines);
+  const sum=[["Month","Department","Requests","Items requested (lines)","Total quantity"]].concat(ds.map(d=>[m,d,st[d].req,st[d].lines,st[d].qty]),[[m,"TOTAL",rs.length,ds.reduce((a,d)=>a+st[d].lines,0),ds.reduce((a,d)=>a+st[d].qty,0)]]);
+  const det=[["Month","Department","Item code","Item name","Requests","Quantity","Unit"]];
+  ds.forEach(d=>{const o={};rs.filter(r=>r.dept==d).forEach(r=>r.items.forEach(i=>{const k=i.code+"|"+i.name+"|"+i.unit,x=o[k]=o[k]||[i.code,i.name,0,0,i.unit];x[2]++;x[3]+=qn(i)}));Object.values(o).sort((a,b)=>b[2]-a[2]).forEach(x=>det.push([m,d,x[0],x[1],x[2],x[3],x[4]]))});
+  const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(sum),"By department");XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(det),"Items by department");
+  XLSX.writeFile(wb,"monthly-report-"+m+".xlsx");
+};
+
 /* ---------- language (English / Khmer) ---------- */
 const LK="irf-lang";
 function loadKhmerFont(){if($("khf"))return;const l=document.createElement("link");l.id="khf";l.rel="stylesheet";l.href="https://fonts.googleapis.com/css2?family=Noto+Sans+Khmer:wght@400;600;700&display=swap";document.head.appendChild(l)}
@@ -400,7 +457,7 @@ function applyLang(){
   document.querySelectorAll("[data-i18n-html]").forEach(el=>{if(el.dataset.en==null)el.dataset.en=el.innerHTML;el.innerHTML=(LANG!=="en"&&K[el.dataset.i18nHtml]!=null)?K[el.dataset.i18nHtml]:el.dataset.en});
   document.querySelectorAll("[data-i18n-ph]").forEach(el=>{if(el.dataset.enPh==null)el.dataset.enPh=el.placeholder;el.placeholder=(LANG!=="en"&&K[el.dataset.i18nPh]!=null)?K[el.dataset.i18nPh]:el.dataset.enPh});
   document.querySelectorAll("#lang button").forEach(b=>b.classList.toggle("on",b.dataset.l===LANG));
-  setTitle();drawChips();draw();list();
+  setTitle();drawChips();draw();list();drawDash();
   if(LOADPROB)renderLoadNote();
   if(LASTDONE)renderDone();
 }
