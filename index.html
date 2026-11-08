@@ -56,6 +56,19 @@ button:disabled{opacity:.5;cursor:default}
 .bar{height:10px;border-radius:99px;background:var(--ac2);min-width:70px;overflow:hidden}.bar i{display:block;height:100%;background:var(--ac);border-radius:99px}
 .sc{overflow-x:auto}.dt .sel{background:var(--ac2)}
 .h3{margin:0 0 8px;font-size:16px}
+.rv{border:1px solid var(--ac);border-radius:8px;padding:10px 12px;margin-top:10px;background:var(--ac2)}
+.rvl{display:grid;grid-template-columns:1.3fr 170px 1.3fr;gap:8px;align-items:start;padding:8px 0;border-bottom:1px solid var(--bd)}
+@media(max-width:700px){.rvl{grid-template-columns:1fr}}
+.rvl .qa{display:flex;gap:6px;align-items:center}.rvl .qa input{width:80px}
+.rvl input.need{border-color:var(--er);outline:1px solid var(--er)}
+.dl{display:block;font-size:12px;font-weight:600;margin-top:2px;color:var(--mu)}.dl.up{color:var(--wa)}.dl.dn2{color:var(--er)}
+.rm{margin-top:8px;padding:8px 10px;border-left:3px solid var(--ac);background:var(--ac2);border-radius:4px;font-size:14px}
+.rc.nw{border-color:var(--ac);box-shadow:0 0 0 2px var(--ac2)}
+.zr{color:var(--er);font-weight:600}
+details.hs{margin-top:8px;font-size:13px}details.hs div{padding:4px 0;border-top:1px solid var(--bd)}
+.slip .tb td.ch{font-weight:700}.slip .tb td.z{color:var(--er);font-weight:700}
+@media print{#ps .c{border:0;padding:0}#fb{display:none!important}}
+
 
 .ldg{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
 .msg button{margin-left:6px;padding:3px 10px}
@@ -85,52 +98,12 @@ body{background:#fff}
 .w{max-width:none;padding:0}
 #done .c{border:0;padding:0}
 }
-.hr{display:flex;align-items:center;justify-content:space-between;gap:12px}.hr img{height:84px;width:auto;flex:none;background:#fff;border-radius:10px;padding:4px}
-.kp{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin:4px 0 14px}
-.kp div{border:1px solid var(--bd);border-radius:10px;padding:10px 12px;background:var(--bg)}
-.kp b{display:block;font-size:24px;line-height:1.2;color:var(--ac);font-variant-numeric:tabular-nums}.kp span{font-size:12px;color:var(--mu)}
-.dt{width:100%;border-collapse:collapse;font-size:14px}.dt th,.dt td{padding:7px 8px;border-bottom:1px solid var(--bd);text-align:left;vertical-align:middle}
-.dt th{font-size:12px;color:var(--mu);font-weight:600;white-space:nowrap}.dt .n{text-align:right;font-variant-numeric:tabular-nums}
-.dt tr:last-child td{border-bottom:0}.dt tfoot td{font-weight:700;border-top:2px solid var(--bd)}
-.bar{height:10px;border-radius:99px;background:var(--ac2);min-width:70px;overflow:hidden}.bar i{display:block;height:100%;background:var(--ac);border-radius:99px}
-.sc{overflow-x:auto}.dt .sel{background:var(--ac2)}
-.h3{margin:0 0 8px;font-size:16px}
-
-.ldg{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-.msg button{margin-left:6px;padding:3px 10px}
-[hidden]{display:none!important}
-.ub{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:0 0 12px;font-size:14px;color:var(--mu)}
-.lang{display:flex;justify-content:flex-end;gap:6px;margin-bottom:10px}
-html[lang="km"] body,html[lang="km"] input,html[lang="km"] select,html[lang="km"] textarea,html[lang="km"] button{font-family:"Noto Sans Khmer","Khmer UI","Leelawadee UI","Khmer OS Battambang",system-ui,sans-serif}
-html[lang="km"] body{line-height:1.75}
-html[lang="km"] input,html[lang="km"] select,html[lang="km"] button{line-height:1.6}
-html[lang="km"] .rf{letter-spacing:0}
-.slip .sh{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;border-bottom:2px solid var(--ac);padding-bottom:10px;margin-bottom:12px}
-.slip h2{margin:0;font-size:20px}.slip .org{color:var(--mu);font-size:13px}
-.slip .rf{font-size:22px;font-weight:700;color:var(--ac);letter-spacing:.5px;white-space:nowrap}
-.slip table{width:100%;border-collapse:collapse;font-size:14px}
-.slip .kv td{padding:4px 0;vertical-align:top}.slip .kv td:first-child{color:var(--mu);width:130px}
-.slip .tb{margin-top:14px}
-.slip .tb th,.slip .tb td{border:1px solid var(--bd);padding:6px 8px;text-align:left}
-.slip .tb th{background:var(--ac2)}.slip .tb .n{text-align:right;width:56px}
-.slip .nt{margin-top:12px;font-size:14px}
-.slip .sig{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-top:48px}
-.slip .sig div{border-top:1px solid var(--tx);padding-top:6px;font-size:13px;color:var(--mu)}
-@media print{
-@page{margin:14mm}
-:root:root:root{--bg:#fff;--card:#fff;--tx:#000;--mu:#444;--bd:#999;--ac:#000;--ac2:#eee;color-scheme:light}
-body{background:#fff}
-.hd,#note,#vf,#lg,.noprint{display:none!important}
-.w{max-width:none;padding:0}
-#done .c{border:0;padding:0}
-}
-.hr{display:flex;align-items:center;justify-content:space-between;gap:12px}.hr img{height:84px;width:auto;flex:none;background:transparent}
-:root[data-theme="dark"] .hr img{filter:drop-shadow(0 0 1px #fff) drop-shadow(0 0 8px rgba(255,255,255,.55))}
-@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .hr img{filter:drop-shadow(0 0 1px #fff) drop-shadow(0 0 8px rgba(255,255,255,.55))}}@media(max-width:560px){.hr img{height:60px}}
+.hr{display:flex;align-items:center;justify-content:space-between;gap:12px}.hr img{height:84px;width:auto;flex:none;background:#fff;border-radius:10px;padding:4px}@media(max-width:560px){.hr img{height:60px}}
 </style></head>
 <body><div class="w">
 <div class="hd"><div class="lang noprint" id="lang"><button class="chip" data-l="en">English</button><button class="chip" data-l="km">ខ្មែរ</button></div><div class="hr"><div><h1 data-i18n="title">Item Request Form</h1><div class="mu" data-i18n-html="subtitle">Select the items you need, enter quantities, and submit. Fields marked <span class="rq">*</span> are required.</div></div><img src="logo.png" alt="Domrey Mother &amp; Child Clinic"></div></div>
 <div id="note"></div>
+<div id="fb" class="noprint"></div>
 
 <div id="lg" hidden>
 <div class="c">
@@ -186,12 +159,16 @@ body{background:#fff}
 <div class="c"><h3 class="h3" data-i18n="d.trend">Last 6 months – items requested per department</h3><div class="mu" style="margin-bottom:8px" data-i18n="d.trendnote">Each number is the count of item lines requested. Months end at the “To date”.</div><div class="sc" id="dtr"></div></div>
 <div class="c"><h3 class="h3" data-i18n="d.top">Most requested items in this period</h3><div class="sc" id="dtp"></div></div>
 </div>
+<div id="ps" hidden>
+<div class="c slip" id="pslip"></div>
+<div class="row noprint" style="justify-content:flex-start"><button class="p" id="pprt" data-i18n="done.print">Print / Save as PDF</button><button id="pback" data-i18n="ps.back">Back to requests</button></div>
+</div>
 <div id="done" hidden>
 <div class="msg noprint" id="doneMsg"></div>
 <div class="c slip" id="slip"></div>
 <div class="row noprint" style="justify-content:flex-start"><button class="p" id="prt" data-i18n="done.print">Print / Save as PDF</button><button id="newReq" data-i18n="done.new">New request</button></div>
 </div>
-<div class="mu noprint" style="text-align:center;margin:18px 0 6px"><span data-i18n="footer">Form version</span> 2026-11-08-n</div>
+<div class="mu noprint" style="text-align:center;margin:18px 0 6px"><span data-i18n="footer">Form version</span> 2026-11-08-o</div>
 
 </div>
 
@@ -374,7 +351,7 @@ ${r.notes?`<div class="nt"><b>${esc(t("slip.notes","Notes:"))}</b> ${esc(r.notes
 <div class="sig"><div>${esc(t("slip.sig1","Requested by (name / signature / date)"))}</div><div>${esc(t("slip.sig2","Received by (name / signature / date)"))}</div></div>`;
   $("doneMsg").innerHTML=`<b>${esc(t("done.msg1","Request submitted."))}</b> `+(ref?`${esc(t("done.msg2","Your reference number is"))} <b>${esc(ref)}</b>. `:"")+esc(t("done.msg3","Print this page (or save it as PDF) and give it to the receiver to confirm."));
 }
-function setTitle(){document.title=!$("done").hidden&&LASTDONE?(LASTDONE.ref?LASTDONE.ref+" - ":"")+t("slip.title","Item Request"):t("title","Item Request Form")}
+function setTitle(){document.title=!$("ps").hidden&&PSX?PSX.x.ref+" - "+t("ps.title","Approved Request"):!$("done").hidden&&LASTDONE?(LASTDONE.ref?LASTDONE.ref+" - ":"")+t("slip.title","Item Request"):t("title","Item Request Form")}
 $("prt").onclick=()=>window.print();
 $("newReq").onclick=()=>{$("done").hidden=true;$("vf").hidden=false;setTitle();scrollTo(0,0)};
 
@@ -383,11 +360,11 @@ const SK="irf-session";
 const getSess=()=>{try{return JSON.parse(sessionStorage.getItem(SK)||"null")}catch(e){return null}};
 const setSess=v=>{try{v?sessionStorage.setItem(SK,JSON.stringify(v)):sessionStorage.removeItem(SK)}catch(e){}};
 let SESS=getSess();
-function showLogin(msg){SESS=null;setSess(null);$("vf").hidden=true;$("done").hidden=true;$("ub").hidden=true;$("tabs").hidden=true;$("vr").hidden=true;$("vd").hidden=true;$("lg").hidden=false;$("lge").textContent=msg||"";$("lpI").value="";scrollTo(0,0)}
+function showLogin(msg){SESS=null;setSess(null);$("vf").hidden=true;$("done").hidden=true;$("ub").hidden=true;$("tabs").hidden=true;$("vr").hidden=true;$("vd").hidden=true;$("ps").hidden=true;$("fb").innerHTML="";stopPoll();$("lg").hidden=false;$("lge").textContent=msg||"";$("lpI").value="";scrollTo(0,0)}
 function showApp(){
   $("lg").hidden=true;$("ub").hidden=false;$("ubU").textContent=SESS.user;$("ubD").textContent=SESS.dept;
   $("dpI").innerHTML=`<option>${esc(SESS.dept)}</option>`;$("dpI").value=SESS.dept;$("dpI").disabled=true;   // department comes from the account
-  const st=/^(stock|admin)$/i.test(SESS.role||"");$("tabs").hidden=!st;$("tDash").hidden=!st;setView(st?"d":"n");   // only the stock team gets the Requests tab
+  const st=/^(stock|admin)$/i.test(SESS.role||"");$("tabs").hidden=false;$("tDash").hidden=!st;setView(st?"d":"n");startPoll();checkNotices();   // only the stock team gets the Requests tab
   cart=cart.filter(x=>!foreign(x));if(deptCat())cat=deptCat();else if(cat in DL)cat="All";
   drawChips();draw();list();
 }
@@ -414,7 +391,7 @@ $("lgo").onclick=()=>{
 
 /* ---------- requests: dashboard / status / history / Excel export ---------- */
 let REQS=[],RSTAT=["Pending","Approved","Issued","Completed"],ISSTOCK=false,rst="All";
-function setView(v){$("vf").hidden=v!="n";$("vr").hidden=v!="r";$("vd").hidden=v!="d";$("done").hidden=true;$("tNew").classList.toggle("on",v=="n");$("tReq").classList.toggle("on",v=="r");$("tDash").classList.toggle("on",v=="d");if(v=="r"||v=="d")loadReqs();setTitle()}
+function setView(v){$("vf").hidden=v!="n";$("vr").hidden=v!="r";$("vd").hidden=v!="d";$("ps").hidden=v!="p";$("done").hidden=true;$("tNew").classList.toggle("on",v=="n");$("tReq").classList.toggle("on",v=="r");$("tDash").classList.toggle("on",v=="d");if(v=="r"||v=="d")loadReqs();if(v=="r")badge();setTitle()}
 $("tNew").onclick=()=>setView("n");$("tReq").onclick=()=>setView("r");$("tDash").onclick=()=>setView("d");$("rrf").onclick=()=>loadReqs();
 async function rcall(body){
   const j=await api(Object.assign({session:SESS.token},body));
@@ -427,17 +404,32 @@ async function loadReqs(){
     REQS=j.requests;ISSTOCK=j.stock;RSTAT=j.statuses;
     const cur=$("rd").value,ds=[...new Set(REQS.map(r=>r.dept))].sort();
     $("rd").innerHTML=`<option value="">${esc(t("r.alld","All departments"))}</option>`+ds.map(d=>`<option${d==cur?" selected":""}>${esc(d)}</option>`).join("");
-    $("rdw").hidden=!ISSTOCK;drawReqs();drawDash();
+    $("rdw").hidden=!ISSTOCK;NEWFB=new Set(ISSTOCK?[]:REQS.filter(r=>r.unseen).map(r=>r.ref));drawReqs();drawDash();if(NEWFB.size)rcall({action:"seen",refs:[...NEWFB]}).then(()=>{NOTI=[];badge()}).catch(()=>{});
   }catch(e){console.error(e);$("rl").innerHTML=`<div class="err">${esc(errText(e,""))}</div>`}
 }
 const rf=()=>{const q=$("rq").value.trim().toLowerCase(),d=$("rd").value,a=$("ra").value,b=$("rb").value;
   return REQS.filter(r=>(!d||r.dept==d)&&(!a||r.time.slice(0,10)>=a)&&(!b||r.time.slice(0,10)<=b)&&(!q||(r.ref+" "+r.name+" "+r.dept+" "+r.items.map(i=>i.code+" "+i.name).join(" ")).toLowerCase().includes(q)))};
 const rshow=()=>rf().filter(x=>rst=="All"||x.status==rst);
+const unitOf=u=>t("unit."+u,u);
+function cardHtml(x){
+  const A=x.approvals||[],lp=A.length?A[A.length-1]:null,ok=lp&&lp.items.length==x.items.length;
+  const lis=x.items.map((i,k)=>{
+    const al=ok&&lp.items[k];
+    if(!al)return `<li>${esc(i.name)} — ${esc(i.qty)} ${esc(unitOf(i.unit))}</li>`;
+    const ch=Number(al.approved)!==Number(i.qty),z=Number(al.approved)===0;
+    return `<li>${esc(i.name)} — ${ch?`<s class="mu">${esc(i.qty)}</s> → `:""}<b class="${z?"zr":""}">${esc(al.approved)} ${esc(unitOf(i.unit))}</b>${z?` <span class="zr">(${esc(t("ap.zero","not approved"))})</span>`:""}${al.reason?`<div class="mu">${esc(t("ap.reason","Reason"))}: ${esc(al.reason)}</div>`:""}</li>`}).join("");
+  const badges=(lp?`<span class="bd">${esc(t("ap.reviewed","Reviewed"))} v${lp.ver}</span> `:"")+(NEWFB.has(x.ref)?`<span class="bd u">${esc(t("nt.new","New feedback"))}</span> `:"");
+  const rm=lp&&lp.remarks?`<div class="rm"><b>${esc(t("ap.mremarks","Main Stock remarks"))}</b> <span class="mu">(${esc(lp.by)}, ${esc(lp.time)})</span><br>${esc(lp.remarks).replace(/\n/g,"<br>")}</div>`:"";
+  const hist=A.length?`<details class="hs"><summary>${esc(t("ap.hist","Approval history"))} (${A.length})</summary>${A.slice().reverse().map(v=>`<div>v${v.ver} · ${esc(v.time)} · ${esc(v.by)} — ${esc(t("ap.totals","requested {r}, approved {a}",{r:v.totReq,a:v.totAppr}))}${v.remarks?`<br><span class="mu">${esc(v.remarks)}</span>`:""} <button data-pr="${esc(x.ref)}" data-v="${v.ver}">${esc(t("ap.print","Print approved slip"))}</button></div>`).join("")}</details>`:"";
+  const ctl=(ISSTOCK?`<select data-ref="${esc(x.ref)}" style="width:auto">${RSTAT.map(s=>`<option value="${esc(s)}"${s==x.status?" selected":""}>${esc(t("st."+s,s))}</option>`).join("")}</select>${RSTAT.indexOf(x.status)<RSTAT.length-1?`<button data-nx="${esc(x.ref)}">${esc(t("r.next","Next step"))} →</button>`:""}<button class="p" data-rv="${esc(x.ref)}">${esc(lp?t("ap.revise","Revise approval"):t("ap.review","Review & approve"))}</button>`:"")+(lp?`<button data-pr="${esc(x.ref)}" data-v="${lp.ver}">${esc(t("ap.print","Print approved slip"))}</button>`:"");
+  return `<div class="rc${NEWFB.has(x.ref)?" nw":""}"><div class="row"><b>${esc(x.ref)}</b><span>${badges}<span class="bd${x.status=="Pending"?" u":""}">${esc(t("st."+x.status,x.status))}</span></span></div><div class="mu">${esc(x.time)} · ${esc(x.dept)} · ${esc(x.name)}${x.priority=="Urgent"?" · "+esc(t("prio.Urgent","Urgent")):""}</div><ul>${lis}</ul>${x.notes?`<div class="mu">${esc(x.notes)}</div>`:""}${rm}${ctl?`<div class="row" style="margin-top:8px;justify-content:flex-start">${ctl}</div>`:""}${ISSTOCK&&REV[x.ref]?reviewHtml(x):""}${hist}</div>`;
+}
 function drawReqs(){
   const base=rf();
   $("rch").innerHTML=["All"].concat(RSTAT).map(s=>`<button class="chip${s==rst?" on":""}" data-s="${esc(s)}">${esc(t("st."+s,s))} (${s=="All"?base.length:base.filter(r=>r.status==s).length})</button>`).join("");
   const r=rshow();$("rcnt").textContent=r.length+" "+t("r.n","requests");
-  $("rl").innerHTML=r.map(x=>`<div class="rc"><div class="row"><b>${esc(x.ref)}</b><span class="bd${x.status=="Pending"?" u":""}">${esc(t("st."+x.status,x.status))}</span></div><div class="mu">${esc(x.time)} · ${esc(x.dept)} · ${esc(x.name)}${x.priority=="Urgent"?" · "+esc(t("prio.Urgent","Urgent")):""}</div><ul>${x.items.map(i=>`<li>${esc(i.name)} — ${esc(i.qty)} ${esc(t("unit."+i.unit,i.unit))}</li>`).join("")}</ul>${x.notes?`<div class="mu">${esc(x.notes)}</div>`:""}${ISSTOCK?`<div class="row" style="margin-top:8px;justify-content:flex-start"><select data-ref="${esc(x.ref)}" style="width:auto">${RSTAT.map(s=>`<option value="${esc(s)}"${s==x.status?" selected":""}>${esc(t("st."+s,s))}</option>`).join("")}</select>${RSTAT.indexOf(x.status)<RSTAT.length-1?`<button data-nx="${esc(x.ref)}">${esc(t("r.next","Next step"))} →</button>`:""}</div>`:""}</div>`).join("")||`<div class="em">${esc(t("r.none","No requests found"))}</div>`;
+  $("rl").innerHTML=r.map(cardHtml).join("")||`<div class="em">${esc(t("r.none","No requests found"))}</div>`;
+  Object.keys(REV).forEach(ref=>{const x=REQS.find(q=>q.ref==ref);if(x)x.items.forEach((_,k)=>rvMark(ref,k))});
 }
 ["rq","rd","ra","rb"].forEach(id=>{$(id).oninput=drawReqs;$(id).onchange=drawReqs});
 $("rch").onclick=e=>{const s=e.target.dataset.s;if(!s)return;rst=s;drawReqs()};
@@ -446,14 +438,102 @@ async function setSt(ref,s){
   catch(e){console.error(e);alert(errText(e,""));drawReqs()}
 }
 $("rl").onchange=e=>{const ref=e.target.dataset.ref;if(ref)setSt(ref,e.target.value)};
-$("rl").onclick=e=>{const n=e.target.dataset.nx;if(n==null)return;const r=REQS.find(x=>x.ref==n);if(!r)return;const i=RSTAT.indexOf(r.status);if(i<RSTAT.length-1)setSt(n,RSTAT[i+1])};
+$("rl").onclick=e=>{const d=e.target.dataset;
+  if(d.nx!=null){const r=REQS.find(x=>x.ref==d.nx);if(!r)return;const i=RSTAT.indexOf(r.status);if(i<RSTAT.length-1)setSt(d.nx,RSTAT[i+1])}
+  else if(d.rv)openRev(d.rv);
+  else if(d.cx){delete REV[d.cx];drawReqs()}
+  else if(d.all)rvAll(d.all);
+  else if(d.z)rvZero(d.z,+d.k);
+  else if(d.sub)submitAppr(d.sub);
+  else if(d.pr)showPS(d.pr,d.v);
+};
+$("rl").oninput=e=>{const d=e.target.dataset,ref=d.rr;if(!ref||!REV[ref])return;
+  if(d.f=="m")REV[ref].m=e.target.value;else{const k=+d.k;REV[ref][d.f=="a"?"a":"r"][k]=e.target.value;rvMark(ref,k)}};
 $("rx").onclick=()=>{
   const r=rshow();if(!r.length||!window.XLSX)return;
-  const rows=[["Ref","Date / time","Department","Requested by","Priority","Status","Item code","Item name","Qty","Unit","Notes"]];
-  r.forEach(x=>x.items.forEach(i=>rows.push([x.ref,x.time,x.dept,x.name,x.priority,x.status,i.code,i.name,Number(i.qty)||0,i.unit,x.notes])));
+  const rows=[["Ref","Date / time","Department","Requested by","Priority","Status","Item code","Item name","Requested qty","Approved qty (latest)","Unit","Approval reason","Main Stock remarks","Notes"]];
+  r.forEach(x=>{const lp=lastAp(x);x.items.forEach((i,k)=>{const al=lp&&lp.items.length==x.items.length?lp.items[k]:null;rows.push([x.ref,x.time,x.dept,x.name,x.priority,x.status,i.code,i.name,Number(i.qty)||0,al?Number(al.approved):"",i.unit,al?al.reason:"",lp?lp.remarks:"",x.notes])})});
   const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(rows),"Requests");
   XLSX.writeFile(wb,"requests-"+new Date().toISOString().slice(0,10)+".xlsx");
 };
+
+/* ---------- Main Stock: approve quantities + send feedback ---------- */
+let REV={},NEWFB=new Set(),NOTI=[],PT=null,PSX=null;
+const isSt=()=>!!(SESS&&/^(stock|admin)$/i.test(SESS.role||""));
+const lastAp=x=>{const a=x.approvals||[];return a.length?a[a.length-1]:null};
+const intOk=v=>/^\d{1,7}$/.test(String(v).trim());
+const rvEl=(ref,k,f)=>[...$("rl").querySelectorAll("[data-rr]")].find(e=>e.dataset.rr==ref&&e.dataset.f==f&&(f=="m"||e.dataset.k==String(k)));
+function dlInfo(q,a){if(!intOk(a))return["",""];a=Number(a);if(a==q)return["✓ "+t("ap.same","as requested"),""];if(a==0)return[t("ap.zero2","Out of stock – approve 0"),"dn2"];if(a<q)return["− "+(q-a)+" "+t("ap.partial","(partial)"),"up"];return["+ "+(a-q),"up"]}
+function rvMark(ref,k){
+  const x=REQS.find(r=>r.ref==ref),R=REV[ref];if(!x||!R||!x.items[k])return;
+  const q=Number(x.items[k].qty),a=R.a[k],ch=intOk(a)&&Number(a)!==q,re=rvEl(ref,k,"r"),d=[...$("rl").querySelectorAll("[data-d]")].find(e=>e.dataset.d==ref+"|"+k);
+  if(re)re.classList.toggle("need",ch&&!String(R.r[k]||"").trim());
+  if(d){const i=dlInfo(q,a);d.textContent=i[0];d.className="dl "+i[1]}
+}
+function reviewHtml(x){
+  const R=REV[x.ref],ref=esc(x.ref);
+  return `<div class="rv"><div class="row" style="margin-bottom:6px"><b>${esc(t("ap.title","Review & approve quantities"))}</b><button data-all="${ref}">${esc(t("ap.all","Approve all as requested"))}</button></div>`
+  +x.items.map((i,k)=>`<div class="rvl"><div>${esc(i.name)}<small class="mu" style="display:block">${esc(i.code)} · ${esc(t("ap.req","Requested"))}: <b>${esc(i.qty)} ${esc(unitOf(i.unit))}</b></small></div>
+<div><div class="qa"><input type="number" min="0" step="1" inputmode="numeric" value="${esc(R.a[k])}" data-rr="${ref}" data-k="${k}" data-f="a" aria-label="${esc(t("ap.appr","Approved quantity"))}"><span class="mu">${esc(unitOf(i.unit))}</span><button data-z="${ref}" data-k="${k}" title="${esc(t("ap.zero2","Out of stock – approve 0"))}">0</button></div><span class="dl" data-d="${ref}|${k}"></span></div>
+<div><input data-rr="${ref}" data-k="${k}" data-f="r" value="${esc(R.r[k])}" maxlength="300" placeholder="${esc(t("ap.reason.ph","Reason (required if quantity changed)"))}"></div></div>`).join("")
+  +`<div class="f" style="margin-top:10px"><label class="l">${esc(t("ap.remarks","Remarks to the department"))}</label><textarea rows="2" maxlength="1000" data-rr="${ref}" data-f="m" placeholder="${esc(t("ap.remarks.ph","Optional – e.g. when to collect, what to expect"))}">${esc(R.m)}</textarea></div>
+<div class="mu">${esc(t("ap.note","The original request is not changed. The department is notified in the system and on Telegram. You can continue issuing the approved items right away."))}</div>
+<div class="row" style="justify-content:flex-start;margin-top:8px"><button class="p" data-sub="${ref}">${esc(t("ap.submit","Submit Approval & Send Feedback"))}</button><button data-cx="${ref}">${esc(t("ap.cancel","Cancel"))}</button></div><div class="err" data-e="${ref}"></div></div>`;
+}
+function openRev(ref){
+  const x=REQS.find(r=>r.ref==ref);if(!x)return;const lp=lastAp(x),ok=lp&&lp.items.length==x.items.length;
+  REV[ref]={a:x.items.map((i,k)=>String(ok&&lp.items[k]?lp.items[k].approved:i.qty)),r:x.items.map((i,k)=>ok&&lp.items[k]?lp.items[k].reason||"":""),m:""};
+  drawReqs();
+}
+function rvAll(ref){const x=REQS.find(r=>r.ref==ref);if(!x||!REV[ref])return;REV[ref].a=x.items.map(i=>String(i.qty));REV[ref].r=x.items.map(()=>"");drawReqs()}
+function rvZero(ref,k){const R=REV[ref];if(!R)return;R.a[k]="0";const el=rvEl(ref,k,"a");if(el)el.value="0";rvMark(ref,k);const re=rvEl(ref,k,"r");if(re)re.focus()}
+const rvErr=(ref,m)=>{const e=[...$("rl").querySelectorAll("[data-e]")].find(x=>x.dataset.e==ref);if(e)e.textContent=m||""};
+async function submitAppr(ref){
+  const x=REQS.find(r=>r.ref==ref),R=REV[ref];if(!x||!R)return;rvErr(ref,"");
+  for(let k=0;k<x.items.length;k++){
+    const q=Number(x.items[k].qty);
+    if(!intOk(R.a[k])){rvErr(ref,t("ap.e.qty","Enter a whole number (0 or more) for every item."));const el=rvEl(ref,k,"a");if(el)el.focus();return}
+    if(Number(R.a[k])!==q&&!String(R.r[k]||"").trim()){rvErr(ref,t("ap.e.reason","Please give a reason for every item where the approved quantity differs from the requested quantity."));const el=rvEl(ref,k,"r");if(el)el.focus();return}
+  }
+  if(!confirm(t("ap.confirm","Send this approval and feedback to {d}?",{d:x.dept})))return;
+  const btn=[...$("rl").querySelectorAll("[data-sub]")].find(b=>b.dataset.sub==ref);if(btn){btn.disabled=true;btn.textContent=t("ap.sending","Sending…")}
+  try{
+    const j=await rcall({action:"approve",ref,remarks:String(R.m||"").trim(),items:x.items.map((i,k)=>({code:i.code,approved:Number(R.a[k]),reason:String(R.r[k]||"").trim()}))});
+    if(!j)return;
+    delete REV[ref];
+    const tg=j.tg=="sent"?t("ap.tg.sent","Telegram message sent."):j.tg=="failed"?t("ap.tg.failed","Telegram message failed – the department can still see it in the system."):t("ap.tg.none","Telegram is not set up for this department – they were notified in the system.");
+    note(esc(t("ap.sent","Approval sent to {d}.",{d:x.dept}))+" "+esc(tg));
+    await loadReqs();scrollTo(0,0);
+  }catch(e){console.error(e);rvErr(ref,errText(e,""));if(btn){btn.disabled=false;btn.textContent=t("ap.submit","Submit Approval & Send Feedback")}}
+}
+
+/* approved slip: printable / save as PDF. The original quantities are shown next to the approved ones. */
+function showPS(ref,ver){
+  const x=REQS.find(r=>r.ref==ref);if(!x)return;const A=x.approvals||[],a=A.find(v=>String(v.ver)==String(ver))||A[A.length-1];if(!a)return;
+  PSX={x,a};renderPS();setView("p");scrollTo(0,0);
+}
+function renderPS(){
+  const {x,a}=PSX,ok=a.items.length==x.items.length;
+  $("pslip").innerHTML=`<div class="sh"><div><h2>${esc(t("ps.title","Approved Request"))}</h2>${CFG.ORG_NAME?`<div class="org">${esc(CFG.ORG_NAME)}</div>`:""}</div><div class="rf">${esc(x.ref)}</div></div>
+<table class="kv"><tr><td>${esc(t("slip.when","Date / time"))}</td><td>${esc(x.time)}</td></tr><tr><td>${esc(t("slip.by","Requested by"))}</td><td>${esc(x.name)}</td></tr><tr><td>${esc(t("slip.dept","Department"))}</td><td>${esc(x.dept)}</td></tr><tr><td>${esc(t("slip.prio","Priority"))}</td><td>${esc(t("prio."+x.priority,x.priority))}</td></tr><tr><td>${esc(t("ps.appr","Approval"))}</td><td>v${a.ver} · ${esc(a.time)} · ${esc(a.by)}</td></tr></table>
+<table class="tb"><tr><th class="n">${esc(t("slip.no","#"))}</th><th>${esc(t("slip.code","Code"))}</th><th>${esc(t("slip.item","Item"))}</th><th class="n">${esc(t("ap.req","Requested"))}</th><th class="n">${esc(t("ap.apprshort","Approved"))}</th><th>${esc(t("slip.unit","Unit"))}</th><th>${esc(t("ap.reason","Reason"))}</th></tr>${x.items.map((i,k)=>{const al=ok&&a.items[k]?a.items[k]:{approved:i.qty,reason:""},ch=Number(al.approved)!==Number(i.qty);return `<tr><td class="n">${k+1}</td><td>${esc(i.code)}</td><td>${esc(i.name)}</td><td class="n">${esc(i.qty)}</td><td class="n ${Number(al.approved)===0?"z":ch?"ch":""}">${esc(al.approved)}</td><td>${esc(unitOf(i.unit))}</td><td>${esc(al.reason||"")}</td></tr>`}).join("")}</table>
+${a.remarks?`<div class="nt"><b>${esc(t("ap.mremarks","Main Stock remarks"))}:</b> ${esc(a.remarks).replace(/\n/g,"<br>")}</div>`:""}
+${x.notes?`<div class="nt"><b>${esc(t("slip.notes","Notes:"))}</b> ${esc(x.notes)}</div>`:""}
+<div class="nt mu">${esc(t("ps.note","The requested quantities are the original request and were not changed."))}</div>
+<div class="sig"><div>${esc(t("ps.sig1","Approved by Main Stock (name / signature / date)"))}</div><div>${esc(t("ps.sig2","Received by (name / signature / date)"))}</div></div>`;
+}
+$("pprt").onclick=()=>window.print();
+$("pback").onclick=()=>setView("r");
+
+/* ---------- in-system notification for departments ---------- */
+function badge(){
+  $("tReq").textContent=t("tab.req","Requests")+(NOTI.length?" ("+NOTI.length+")":"");
+  $("fb").innerHTML=NOTI.length&&$("vr").hidden&&$("lg").hidden?`<div class="msg noprint">🔔 ${esc(t("nt.msg","Main Stock sent feedback on {n} request(s).",{n:NOTI.length}))} <button id="fbv">${esc(t("nt.view","View"))}</button></div>`:"";
+}
+$("fb").onclick=e=>{if(e.target.id=="fbv")setView("r")};
+async function checkNotices(){if(!SESS||isSt()||document.hidden)return;try{const j=await rcall({action:"notices"});if(j){NOTI=j.refs||[];badge()}}catch(e){}}
+function startPoll(){stopPoll();if(!isSt())PT=setInterval(checkNotices,60000)}
+function stopPoll(){if(PT){clearInterval(PT);PT=null}NOTI=[];$("tReq").textContent=t("tab.req","Requests")}
 
 /* ---------- dashboard (stock team): report per department for a date range ---------- */
 const TODAY=()=>new Date().toLocaleString("sv-SE",{timeZone:CFG.TIMEZONE||"Asia/Phnom_Penh"}).slice(0,10);
@@ -524,7 +604,7 @@ function applyLang(){
   document.querySelectorAll("[data-i18n-html]").forEach(el=>{if(el.dataset.en==null)el.dataset.en=el.innerHTML;el.innerHTML=(LANG!=="en"&&K[el.dataset.i18nHtml]!=null)?K[el.dataset.i18nHtml]:el.dataset.en});
   document.querySelectorAll("[data-i18n-ph]").forEach(el=>{if(el.dataset.enPh==null)el.dataset.enPh=el.placeholder;el.placeholder=(LANG!=="en"&&K[el.dataset.i18nPh]!=null)?K[el.dataset.i18nPh]:el.dataset.enPh});
   document.querySelectorAll("#lang button").forEach(b=>b.classList.toggle("on",b.dataset.l===LANG));
-  setTitle();drawChips();draw();list();drawDash();
+  setTitle();drawChips();draw();list();drawDash();if(REQS.length)drawReqs();badge();if(PSX&&!$("ps").hidden)renderPS();
   if(LOADPROB)renderLoadNote();
   if(LASTDONE)renderDone();
 }
