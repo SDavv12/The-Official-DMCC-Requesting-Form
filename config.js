@@ -8,7 +8,7 @@ window.FORM_CONFIG = {
   // Google Apps Script web-app URL (requests are sent here -> Google Sheet)
   SHEET_URL: "https://script.google.com/macros/s/AKfycbz-4lyWtHYqPRWo1oAFNKktZlSPjxaisQ3QIvNxI4o2ST_o-PtOMz0iEYuq2Z0cXq2qBg/exec",
   // Shown on the form and on the printed slip
-  ORG_NAME: "Your Clinic Name",
+  ORG_NAME: "Domrey Mother & Child Clinic",
 
   // Time zone used for the time printed on the slip
   TIMEZONE: "Asia/Phnom_Penh",
