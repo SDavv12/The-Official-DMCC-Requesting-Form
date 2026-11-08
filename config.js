@@ -7,6 +7,11 @@ window.FORM_CONFIG = {
 
   // Google Apps Script web-app URL (requests are sent here -> Google Sheet)
   SHEET_URL: "https://script.google.com/macros/s/AKfycbxzluKhZv_W0vYZdEaIFPcH4kixgrrcZaopPgAesY7CkczG9XGL3LgV2h7wAtLJk4Va/exec",
+  // Shown on the form and on the printed slip
+  ORG_NAME: "Your Clinic Name",
+
+  // Time zone used for the time printed on the slip
+  TIMEZONE: "Asia/Phnom_Penh",
 
   // The two Excel files that hold the item lists (same folder as index.html).
   // File names are case-sensitive on GitHub.
