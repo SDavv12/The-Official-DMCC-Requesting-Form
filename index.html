@@ -564,11 +564,13 @@ function setPreset(p){const r=preset(p);$("dfrom").value=r[0];$("dto").value=r[1
 $("dfrom").value=preset("month")[0];$("dto").value=preset("month")[1];
 const mkey=r=>String(r.time).slice(0,7);
 const qn=i=>Number(i.qty)||0;
+/* Approved/issued qty from last approval. 0 or no approval = not issued (excluded from totals). */
+const aq=(r,k)=>{const lp=lastAp(r);if(!lp||!lp.items||lp.items.length!=r.items.length)return 0;const a=Number(lp.items[k]&&lp.items[k].approved);return a>0?a:0};
 const fmt=n=>Number(n).toLocaleString("en-US",{maximumFractionDigits:2});
 const mlabel=m=>{const [y,mo]=m.split("-").map(Number);return new Date(Date.UTC(y,mo-1,1)).toLocaleDateString(LANG=="km"?"km-KH":"en-GB",{month:"short",year:"numeric",timeZone:"UTC"})};
 function monthsBack(m,n){const [y,mo]=m.split("-").map(Number),out=[];for(let k=n-1;k>=0;k--){const d=new Date(Date.UTC(y,mo-1-k,1));out.push(d.getUTCFullYear()+"-"+String(d.getUTCMonth()+1).padStart(2,"0"))}return out}
-function deptStats(rs){const o={};rs.forEach(r=>{const d=o[r.dept]=o[r.dept]||{req:0,lines:0,qty:0,urg:0};d.req++;d.lines+=r.items.length;d.qty+=r.items.reduce((a,i)=>a+qn(i),0);if(r.priority=="Urgent")d.urg++});return o}
-function topItems(rs){const o={};rs.forEach(r=>r.items.forEach(i=>{const k=i.code+"|"+i.name,x=o[k]=o[k]||{code:i.code,name:i.name,req:0,qty:0,units:{}};x.req++;x.qty+=qn(i);x.units[i.unit]=(x.units[i.unit]||0)+qn(i)}));return Object.values(o).sort((a,b)=>b.req-a.req||b.qty-a.qty)}
+function deptStats(rs){const o={};rs.forEach(r=>{const d=o[r.dept]=o[r.dept]||{req:0,lines:0,qty:0,urg:0};d.req++;d.lines+=r.items.length;d.qty+=r.items.reduce((a,i,k)=>a+aq(r,k),0);if(r.priority=="Urgent")d.urg++});return o}
+function topItems(rs){const o={};rs.forEach(r=>r.items.forEach((i,k)=>{const q=aq(r,k),key=i.code+"|"+i.name,x=o[key]=o[key]||{code:i.code,name:i.name,req:0,qty:0,units:{}};x.req++;if(q>0){x.qty+=q;x.units[i.unit]=(x.units[i.unit]||0)+q}}));return Object.values(o).filter(x=>x.qty>0).sort((a,b)=>b.qty-a.qty||b.req-a.req)}
 const unitTxt=u=>Object.keys(u).map(k=>fmt(u[k])+" "+t("unit."+k,k)).join(" + ");
 const inRange=()=>{const a=$("dfrom").value,b=$("dto").value;return REQS.filter(r=>{const d=String(r.time).slice(0,10);return(!a||d>=a)&&(!b||d<=b)})};
 function drawDash(){
@@ -578,7 +580,7 @@ function drawDash(){
   const rs=inRange(),st=deptStats(rs),none=`<div class="em">${esc(t("d.none","No requests in this period"))}</div>`;
   $("dcnt").textContent=rs.length+" "+t("r.n","requests");
   const all=[...new Set(REQS.map(r=>r.dept))].sort();
-  const lines=rs.reduce((x,r)=>x+r.items.length,0),qty=rs.reduce((x,r)=>x+r.items.reduce((y,i)=>y+qn(i),0),0),urg=rs.filter(r=>r.priority=="Urgent").length;
+  const lines=rs.reduce((x,r)=>x+r.items.length,0),qty=rs.reduce((x,r)=>x+r.items.reduce((y,i,k)=>y+aq(r,k),0),0),urg=rs.filter(r=>r.priority=="Urgent").length;
   const card=(v,l)=>`<div><b>${esc(fmt(v))}</b><span>${esc(l)}</span></div>`;
   $("dk").innerHTML=card(rs.length,t("d.k.req","Requests"))+card(lines,t("d.k.lines","Items requested"))+card(qty,t("d.k.qty","Total quantity"))+card(urg,t("d.k.urg","Urgent requests"))+card(rs.filter(r=>r.status=="Pending").length,t("d.k.pen","Still pending"));
   const E={req:0,lines:0,qty:0,urg:0};
@@ -604,7 +606,7 @@ $("dx").onclick=()=>{
   const st=deptStats(rs),ds=Object.keys(st).sort((x,y)=>st[y].lines-st[x].lines),rng=(a||"start")+" to "+(b||"today");
   const sum=[["From","To","Department","Requests","Items requested (lines)","Total quantity","Urgent requests","% urgent"]].concat(ds.map(d=>[a,b,d,st[d].req,st[d].lines,st[d].qty,st[d].urg,st[d].req?Math.round(st[d].urg/st[d].req*100)/100:0]),[[a,b,"TOTAL",rs.length,ds.reduce((x,d)=>x+st[d].lines,0),ds.reduce((x,d)=>x+st[d].qty,0),ds.reduce((x,d)=>x+st[d].urg,0),""]]);
   const det=[["From","To","Department","Item code","Item name","Requests","Quantity","Unit"]];
-  ds.forEach(d=>{const o={};rs.filter(r=>r.dept==d).forEach(r=>r.items.forEach(i=>{const k=i.code+"|"+i.name+"|"+i.unit,x=o[k]=o[k]||[i.code,i.name,0,0,i.unit];x[2]++;x[3]+=qn(i)}));Object.values(o).sort((x,y)=>y[2]-x[2]).forEach(x=>det.push([a,b,d,x[0],x[1],x[2],x[3],x[4]]))});
+  ds.forEach(d=>{const o={};rs.filter(r=>r.dept==d).forEach(r=>r.items.forEach((i,idx)=>{const q=aq(r,idx);if(q<=0)return;const k=i.code+"|"+i.name+"|"+i.unit,x=o[k]=o[k]||[i.code,i.name,0,0,i.unit];x[2]++;x[3]+=q}));Object.values(o).sort((x,y)=>y[2]-x[2]).forEach(x=>det.push([a,b,d,x[0],x[1],x[2],x[3],x[4]]))});
   const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(sum),"By department");XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(det),"Items by department");
   XLSX.writeFile(wb,"report-"+rng.replace(/ /g,"_")+".xlsx");
 };
