@@ -119,7 +119,7 @@ body{background:#fff}
 
 <div id="vf" hidden>
 <div class="c"><div class="g">
-<div class="f"><label class="l" for="nmI" data-i18n-html="f.name">Your name <span class="rq">*</span></label><input id="nmI" autocomplete="name" placeholder="Full name" data-i18n-ph="f.name.ph"></div>
+<div class="f"><label class="l" for="nmI" data-i18n-html="f.name">Your name <span class="rq">*</span></label><select id="nmI"><option value="">Choose…</option></select></div>
 <div class="f"><label class="l" for="dpI" data-i18n-html="f.dept">Department / ward <span class="rq">*</span></label>
 <select id="dpI"><option value="">Choose…</option></select></div>
 <div class="f"><label class="l" for="prI" data-i18n="f.prio">Priority</label><select id="prI"><option value="Normal" data-i18n="prio.Normal">Normal</option><option value="Urgent" data-i18n="prio.Urgent">Urgent</option></select></div>
@@ -365,9 +365,18 @@ const getSess=()=>{try{return JSON.parse(sessionStorage.getItem(SK)||"null")}cat
 const setSess=v=>{try{v?sessionStorage.setItem(SK,JSON.stringify(v)):sessionStorage.removeItem(SK)}catch(e){}};
 let SESS=getSess();
 function showLogin(msg){SESS=null;setSess(null);$("vf").hidden=true;$("done").hidden=true;$("ub").hidden=true;$("tabs").hidden=true;$("vr").hidden=true;$("vd").hidden=true;$("ps").hidden=true;$("fb").innerHTML="";stopPoll();$("lg").hidden=false;$("lge").textContent=msg||"";$("lpI").value="";scrollTo(0,0)}
+function fillNames(){
+  const dept=(SESS&&SESS.dept)||"";
+  const list=(CFG.STAFF&&CFG.STAFF[dept])||[];
+  const cur=$("nmI").value;
+  $("nmI").innerHTML=`<option value="">${esc(t("f.name.choose","Choose…"))}</option>`+
+    list.map(n=>`<option value="${esc(n)}">${esc(n)}</option>`).join("");
+  if(list.includes(cur))$("nmI").value=cur;
+}
 function showApp(){
   $("lg").hidden=true;$("ub").hidden=false;$("ubU").textContent=SESS.user;$("ubD").textContent=SESS.dept;
   $("dpI").innerHTML=`<option>${esc(SESS.dept)}</option>`;$("dpI").value=SESS.dept;$("dpI").disabled=true;   // department comes from the account
+  fillNames();
   const st=/^(stock|admin)$/i.test(SESS.role||"");$("tabs").hidden=false;$("tDash").hidden=!st;$("tNew").hidden=st;setView(st?"d":"n");startPoll();checkNotices();   // stock/admin: no New request tab, only Requests + Dashboard
   cart=cart.filter(x=>!foreign(x));if(deptCat())cat=deptCat();else if(cat in DL)cat="All";
   drawChips();draw();list();

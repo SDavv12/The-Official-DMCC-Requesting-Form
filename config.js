@@ -30,6 +30,25 @@ window.FORM_CONFIG = {
   DEPARTMENTS: ["Pharmacy", "Laboratory", "Housekeeping", "Other"],
   UNITS: ["pcs", "box", "bottle", "vial", "tube", "sachet", "pack", "amp", "pair", "roll", "case", "container", "bundle"],
 
+  // Staff names by department (shown in the "Your name" dropdown after login)
+  STAFF: {
+    "Pharmacy": [
+      "CHAN SOPHEAK SREYLY",
+      "VOEUN RATHANA",
+      "HEANG KANHA",
+      "BAN NARIN"
+    ],
+    "Laboratory": [
+      "CHEAV RACHNA",
+      "LIM ALIZA",
+      "EANG CHHAIYAN",
+      "HENG SEYHA"
+    ],
+    "Housekeeping": [
+      "THAI CHANVEASNA"
+    ]
+  },
+
   // Category filter buttons are worked out automatically for Active_ALL:
   //   - code starting with S + digits  -> Supplies
   //   - name contains "vaccine"        -> Vaccines
