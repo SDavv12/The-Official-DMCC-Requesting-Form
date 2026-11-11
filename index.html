@@ -364,7 +364,7 @@ const SK="irf-session";
 const getSess=()=>{try{return JSON.parse(sessionStorage.getItem(SK)||"null")}catch(e){return null}};
 const setSess=v=>{try{v?sessionStorage.setItem(SK,JSON.stringify(v)):sessionStorage.removeItem(SK)}catch(e){}};
 let SESS=getSess();
-/* Portal open 06:00–16:00 Asia/Phnom_Penh daily */
+/* Portal open 06:00–16:00 Asia/Phnom_Penh daily — stock/admin can log in anytime */
 const CLOSED_MSG="Domrey Mother & Child Clinic's online portal is open daily between 6:00 AM and 4:00 PM.\nPlease log back in tomorrow morning starting at 6:00 AM to complete your request.";
 function isPortalOpen(){
   try{
@@ -374,13 +374,14 @@ function isPortalOpen(){
     return mins>=6*60&&mins<16*60;   // 06:00 inclusive → 16:00 exclusive
   }catch(e){return true}
 }
-function enforceHours(){
-  if(isPortalOpen())return false;
+const isStockRole=r=>/^(stock|admin)$/i.test(r||"");
+/* Returns true if access is blocked (non-stock + outside hours) */
+function enforceHours(role){
+  if(isPortalOpen()||isStockRole(role))return false;
   showLogin(CLOSED_MSG);
-  $("luI").disabled=true;$("lpI").disabled=true;$("lgb").disabled=true;
   return true;
 }
-function showLogin(msg){SESS=null;setSess(null);$("vf").hidden=true;$("done").hidden=true;$("ub").hidden=true;$("tabs").hidden=true;$("vr").hidden=true;$("vd").hidden=true;$("ps").hidden=true;$("fb").innerHTML="";stopPoll();$("lg").hidden=false;$("lge").textContent=msg||"";$("lpI").value="";$("luI").disabled=false;$("lpI").disabled=false;$("lgb").disabled=false;scrollTo(0,0)}
+function showLogin(msg){SESS=null;setSess(null);$("vf").hidden=true;$("done").hidden=true;$("ub").hidden=true;$("tabs").hidden=true;$("vr").hidden=true;$("vd").hidden=true;$("ps").hidden=true;$("fb").innerHTML="";stopPoll();$("lg").hidden=false;$("lge").textContent=msg||"";$("lpI").value="";scrollTo(0,0)}
 function fillNames(){
   const dept=(SESS&&SESS.dept)||"";
   const list=(CFG.STAFF&&CFG.STAFF[dept])||[];
@@ -390,16 +391,15 @@ function fillNames(){
   if(list.includes(cur))$("nmI").value=cur;
 }
 function showApp(){
-  if(enforceHours())return;
+  if(enforceHours(SESS&&SESS.role))return;
   $("lg").hidden=true;$("ub").hidden=false;$("ubU").textContent=SESS.user;$("ubD").textContent=SESS.dept;
   $("dpI").innerHTML=`<option>${esc(SESS.dept)}</option>`;$("dpI").value=SESS.dept;$("dpI").disabled=true;   // department comes from the account
   fillNames();
-  const st=/^(stock|admin)$/i.test(SESS.role||"");$("tabs").hidden=false;$("tDash").hidden=!st;$("tNew").hidden=st;setView(st?"d":"n");startPoll();checkNotices();   // stock/admin: no New request tab, only Requests + Dashboard
+  const st=isStockRole(SESS.role);$("tabs").hidden=false;$("tDash").hidden=!st;$("tNew").hidden=st;setView(st?"d":"n");startPoll();checkNotices();   // stock/admin: no New request tab, only Requests + Dashboard
   cart=cart.filter(x=>!foreign(x));if(deptCat())cat=deptCat();else if(cat in DL)cat="All";
   drawChips();draw();list();
 }
 $("lgb").onclick=async()=>{
-  if(enforceHours())return;
   const u=$("luI").value.trim(),p=$("lpI").value;
   if(!u||!p)return $("lge").textContent=t("e.enter","Enter your username and password.");
   if(!SHEET_URL||SHEET_URL.startsWith("PASTE"))return $("lge").textContent=t("e.noconn","This form isn’t connected to a Google Sheet yet (SHEET_URL in config.js is not set).");
@@ -407,6 +407,8 @@ $("lgb").onclick=async()=>{
   try{
     const j=await api({action:"login",username:u,password:p});
     if(!j.ok)throw new Error("SERVER:"+(j.error||"Login failed"));
+    /* Department users blocked outside hours; stock/admin always allowed */
+    if(enforceHours(j.role)){$("lgb").disabled=false;$("lgb").textContent=t("login.btn","Log in");return}
     SESS={token:j.token,dept:j.dept,user:j.user,role:j.role||""};setSess(SESS);
     $("luI").value="";$("lpI").value="";showApp();
   }catch(e){console.error(e);$("lge").textContent=errText(e,"")}
@@ -653,8 +655,8 @@ $("lang").hidden=!(window.I18N&&window.I18N.km);          // no lang.js uploaded
 $("lang").onclick=e=>{const l=e.target.dataset&&e.target.dataset.l;if(l)setLang(l,true)};
 
 drawChips();draw();loadItems();
-if(enforceHours()){/* closed – stay on login with message */}
-else if(SESS)showApp();
+if(SESS&&!enforceHours(SESS.role))showApp();
+else if(!isPortalOpen()&&!(SESS&&isStockRole(SESS.role)))showLogin(CLOSED_MSG);
 else showLogin("");
 let savedLang=null;try{savedLang=localStorage.getItem(LK)}catch(e){}
 setLang(savedLang||((navigator.language||"").toLowerCase().startsWith("km")?"km":"en"),false);
