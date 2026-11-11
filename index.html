@@ -1160,11 +1160,19 @@ $("lgo").onclick=()=>{
 
 /* ---------- requests: dashboard / status / history / Excel export ---------- */
 let REQS=[],RSTAT=["Pending","Approved","Issued","Completed"],ISSTOCK=false,rst="All";
+let viewAnimT=null,wantAnim=null;
 function playViewAnim(id){
   const el=$(id);if(!el)return;
   el.classList.remove("view-enter");
   void el.offsetWidth;
   el.classList.add("view-enter");
+  clearTimeout(viewAnimT);
+  viewAnimT=setTimeout(()=>el.classList.remove("view-enter"),750);
+}
+function finishViewAnim(){
+  if(!wantAnim)return;
+  const id=wantAnim;wantAnim=null;
+  playViewAnim(id);
 }
 function setView(v){
   $("vf").hidden=v!="n";$("vr").hidden=v!="r";$("vd").hidden=v!="d";$("ps").hidden=v!="p";$("done").hidden=true;
@@ -1177,9 +1185,10 @@ function setView(v){
   const nr=$("navReq"),nd=$("navDash");
   if(nr)nr.classList.toggle("on",v=="r");
   if(nd)nd.classList.toggle("on",v=="d");
-  if(v=="r"||v=="d")loadReqs();if(v=="r")badge();setTitle();
-  if(v=="d")playViewAnim("vd");
-  if(v=="r"&&isSt())playViewAnim("vr");
+  /* Animate once after data is ready — avoids double pop when loadReqs refreshes numbers */
+  wantAnim=v==="d"?"vd":(v==="r"&&isSt()?"vr":null);
+  if(v=="r"||v=="d")loadReqs();else wantAnim=null;
+  if(v=="r")badge();setTitle();
 }
 $("tNew").onclick=()=>setView("n");$("tReq").onclick=()=>setView("r");$("tDash").onclick=()=>setView("d");$("rrf").onclick=()=>loadReqs();
 if($("dback"))$("dback").onclick=()=>setView("r");
@@ -1270,6 +1279,7 @@ function drawReqs(){
   $("rl").innerHTML=r.map(cardHtml).join("")||`<div class="em">${esc(t("r.none","No requests found"))}</div>`;
   Object.keys(REV).forEach(ref=>{const x=REQS.find(q=>q.ref==ref);if(x)x.items.forEach((_,k)=>rvMark(ref,k))});
   badge();
+  if(wantAnim==="vr")finishViewAnim();
 }
 ["rq","rd","ra","rb"].forEach(id=>{$(id).oninput=drawReqs;$(id).onchange=drawReqs});
 $("rch").onclick=e=>{const s=e.target.dataset.s;if(!s)return;rst=s;drawReqs()};
@@ -1413,7 +1423,7 @@ const inRange=()=>{const a=$("dfrom").value,b=$("dto").value;return REQS.filter(
 function drawDash(){
   if(!ISSTOCK)return;
   const a=$("dfrom").value,b=$("dto").value;
-  if(a&&b&&a>b){$("dcnt").textContent=t("d.badrange","“From date” is after “To date”.");$("dk").innerHTML=$("dd").innerHTML=$("dug").innerHTML=$("dtr").innerHTML=$("dtp").innerHTML="";$("dutop").textContent="";return}
+  if(a&&b&&a>b){$("dcnt").textContent=t("d.badrange","“From date” is after “To date”.");$("dk").innerHTML=$("dd").innerHTML=$("dug").innerHTML=$("dtr").innerHTML=$("dtp").innerHTML="";$("dutop").textContent="";finishViewAnim();return}
   const rs=inRange(),st=deptStats(rs),none=`<div class="em">${esc(t("d.none","No requests in this period"))}</div>`;
   $("dcnt").textContent=rs.length+" "+t("r.n","requests");
   const all=[...new Set(REQS.map(r=>r.dept))].sort();
@@ -1436,6 +1446,7 @@ function drawDash(){
   $("dtr").innerHTML=all.length?`<table class="dt"><thead><tr><th>${esc(t("r.dept","Department"))}</th>${ms.map(k=>`<th class="n${sel(k)}">${esc(mlabel(k))}</th>`).join("")}</tr></thead><tbody>${all.map(d=>`<tr><td>${esc(d)}</td>${ms.map(k=>`<td class="n${sel(k)}">${(cnt[d]||{})[k]||"–"}</td>`).join("")}</tr>`).join("")}</tbody><tfoot><tr><td>${esc(t("d.total","Total"))}</td>${tot.map((v,i)=>`<td class="n${sel(ms[i])}">${v}</td>`).join("")}</tr></tfoot></table>`:"";
   const tp=topItems(rs).slice(0,10);
   $("dtp").innerHTML=tp.length?`<table class="dt"><thead><tr><th>${esc(t("slip.item","Item"))}</th><th class="n">${esc(t("d.k.req","Requests"))}</th><th class="n">${esc(t("d.k.qty","Total quantity"))}</th></tr></thead><tbody>${tp.map(x=>`<tr><td>${esc(x.name)}<div class="mu">${esc(x.code)}</div></td><td class="n">${x.req}</td><td class="n">${esc(unitTxt(x.units))}</td></tr>`).join("")}</tbody></table>`:none;
+  finishViewAnim();
 }
 ["dfrom","dto"].forEach(id=>{$(id).oninput=drawDash;$(id).onchange=drawDash});
 $("dpre").onclick=e=>{const p=e.target.dataset.p;if(p)setPreset(p)};
