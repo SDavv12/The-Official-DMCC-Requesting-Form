@@ -341,7 +341,73 @@ body.dash-on{background:#0b1220}
 body.dash-on .w{max-width:none;padding:0;margin:0}
 body.dash-on .hd,body.dash-on .ub,body.dash-on .tabs,body.dash-on #note,body.dash-on #fb,
 body.dash-on .mu.noprint{display:none!important}
-body.dash-on #vd{display:block}
+body.dash-on #vd,body.dash-on #vr{display:block}
+
+/* Stock Requests – match dashboard look */
+body.dash-on #vr .dash{min-height:100vh}
+/* Non-stock requests: flatten the shell so it stays the normal form look */
+#vr:not(.stock-req) .dash{
+  display:block;background:transparent;color:inherit;min-height:0;grid-template-columns:1fr
+}
+#vr:not(.stock-req) #reqSide{display:none!important}
+#vr:not(.stock-req) .dash-main{padding:0}
+#vr:not(.stock-req) .dash-top{display:none}
+#vr:not(.stock-req) .req-filters{
+  background:var(--card);border:1px solid var(--bd);border-radius:10px;
+  padding:18px;margin-bottom:12px
+}
+body.dash-on .rc{
+  background:#121a27;border:1px solid #243041;border-radius:14px;
+  padding:16px 18px;margin-bottom:12px;
+  transition:border-color .15s,box-shadow .15s,transform .15s
+}
+body.dash-on .rc:hover{border-color:rgba(45,212,191,.35);box-shadow:0 8px 24px rgba(0,0,0,.25)}
+body.dash-on .rc.nw{border-color:#2dd4bf;box-shadow:0 0 0 1px rgba(45,212,191,.25)}
+body.dash-on .rc b{color:#e8eef7}
+body.dash-on .rc .mu{color:#94a3b8}
+body.dash-on .rc ul{margin:10px 0 0;padding-left:18px;color:#cbd5e1}
+body.dash-on .rc li{margin:4px 0}
+body.dash-on .rc .bd{
+  background:rgba(45,212,191,.12);border:1px solid rgba(45,212,191,.3);color:#2dd4bf
+}
+body.dash-on .rc .bd.u{
+  background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.35);color:#fbbf24
+}
+body.dash-on .rc select,body.dash-on .rc button{
+  background:#0b1220;border:1px solid #243041;color:#e8eef7;border-radius:8px
+}
+body.dash-on .rc button.p{background:#2dd4bf;border-color:#2dd4bf;color:#042f2e}
+body.dash-on .rc button.p:hover{background:#5eead4}
+body.dash-on .rc .rm{
+  margin-top:10px;padding:10px 12px;border-radius:8px;
+  background:rgba(45,212,191,.08);border-left:3px solid #2dd4bf;color:#cbd5e1
+}
+body.dash-on .rc details.hs{color:#94a3b8}
+body.dash-on .rc details.hs summary{cursor:pointer;color:#2dd4bf}
+body.dash-on .zr{color:#f97066}
+body.dash-on .req-filters{
+  background:#121a27;border:1px solid #243041;border-radius:14px;
+  padding:16px 18px;margin-bottom:18px
+}
+body.dash-on .req-filters .l{color:#94a3b8}
+body.dash-on .req-filters input,
+body.dash-on .req-filters select{
+  background:#0b1220;border-color:#243041;color:#e8eef7
+}
+body.dash-on .req-filters .chip{
+  background:#0b1220;border:1px solid #243041;color:#94a3b8
+}
+body.dash-on .req-filters .chip.on{
+  background:rgba(45,212,191,.14);border-color:rgba(45,212,191,.4);color:#2dd4bf
+}
+body.dash-on .req-filters .chip:hover{border-color:#2dd4bf;color:#2dd4bf}
+body.dash-on #rcnt{color:#94a3b8}
+body.dash-on .req-actions button{
+  background:#0b1220;border:1px solid #243041;color:#e8eef7
+}
+body.dash-on .req-actions button.p{
+  background:#2dd4bf;border-color:#2dd4bf;color:#042f2e
+}
 
 .dash{
   display:grid;
@@ -581,14 +647,46 @@ body.dash-on #vd{display:block}
 
 <div class="tabs noprint" id="tabs" hidden><button id="tNew" data-i18n="tab.new">New request</button><button id="tReq" data-i18n="tab.req">Requests</button><button id="tDash" data-i18n="tab.dash" hidden>Dashboard</button></div>
 <div id="vr" hidden>
-<div class="c"><div class="g">
-<div class="f"><label class="l" for="rq" data-i18n="r.search">Search</label><input id="rq" type="search" placeholder="Reference, name, item…"></div>
-<div class="f" id="rdw"><label class="l" for="rd" data-i18n="r.dept">Department</label><select id="rd"></select></div>
-<div class="f"><label class="l" for="ra" data-i18n="r.from">From date</label><input id="ra" type="date"></div>
-<div class="f"><label class="l" for="rb" data-i18n="r.to">To date</label><input id="rb" type="date"></div>
-</div><div class="ch" id="rch"></div>
-<div class="row"><span class="mu" id="rcnt"></span><span><button id="rrf" data-i18n="r.refresh">Refresh</button> <button class="p" id="rx" data-i18n="r.export">Download Excel</button></span></div></div>
-<div id="rl"></div>
+<div class="dash" id="reqShell">
+  <aside class="dash-side noprint" id="reqSide">
+    <div class="dash-brand">
+      <div class="dash-logo">DM</div>
+      <div>
+        <b>Stock</b>
+        <span>Requests</span>
+      </div>
+    </div>
+    <nav class="dash-nav">
+      <a href="#" class="on" id="navReq" data-goview="r">Requests</a>
+      <a href="#" id="navDash" data-goview="d">Dashboard</a>
+    </nav>
+    <div class="dash-side-foot">
+      <button type="button" id="rlogout" class="dash-back">Log out</button>
+    </div>
+  </aside>
+  <div class="dash-main">
+    <div class="dash-top">
+      <div>
+        <h2 class="dash-title" data-i18n="tab.req">Requests</h2>
+        <div class="mu" id="rcnt"></div>
+      </div>
+      <div class="dash-actions req-actions">
+        <button id="rrf" data-i18n="r.refresh">Refresh</button>
+        <button class="p" id="rx" data-i18n="r.export">Download Excel</button>
+      </div>
+    </div>
+    <div class="req-filters">
+      <div class="g">
+        <div class="f"><label class="l" for="rq" data-i18n="r.search">Search</label><input id="rq" type="search" placeholder="Reference, name, item…"></div>
+        <div class="f" id="rdw"><label class="l" for="rd" data-i18n="r.dept">Department</label><select id="rd"></select></div>
+        <div class="f"><label class="l" for="ra" data-i18n="r.from">From date</label><input id="ra" type="date"></div>
+        <div class="f"><label class="l" for="rb" data-i18n="r.to">To date</label><input id="rb" type="date"></div>
+      </div>
+      <div class="ch" id="rch" style="margin-top:12px"></div>
+    </div>
+    <div id="rl"></div>
+  </div>
+</div>
 </div>
 <div id="vd" hidden>
 <div class="dash">
@@ -601,6 +699,7 @@ body.dash-on #vd{display:block}
       </div>
     </div>
     <nav class="dash-nav">
+      <a href="#" id="navReq2" data-goview="r">Requests</a>
       <a href="#dsec-overview" class="on" data-dnav="overview">Overview</a>
       <a href="#dsec-dept" data-dnav="dept">By department</a>
       <a href="#dsec-urgent" data-dnav="urgent">Urgent</a>
@@ -950,18 +1049,28 @@ let REQS=[],RSTAT=["Pending","Approved","Issued","Completed"],ISSTOCK=false,rst=
 function setView(v){
   $("vf").hidden=v!="n";$("vr").hidden=v!="r";$("vd").hidden=v!="d";$("ps").hidden=v!="p";$("done").hidden=true;
   $("tNew").classList.toggle("on",v=="n");$("tReq").classList.toggle("on",v=="r");$("tDash").classList.toggle("on",v=="d");
-  document.body.classList.toggle("dash-on",v=="d");
+  const stockShell=isSt()&&(v=="r"||v=="d");
+  document.body.classList.toggle("dash-on",stockShell||v=="d");
+  if($("vr"))$("vr").classList.toggle("stock-req",isSt());
+  /* sidebar active state */
+  const nr=$("navReq"),nd=$("navDash");
+  if(nr)nr.classList.toggle("on",v=="r");
+  if(nd)nd.classList.toggle("on",v=="d");
   if(v=="r"||v=="d")loadReqs();if(v=="r")badge();setTitle()
 }
 $("tNew").onclick=()=>setView("n");$("tReq").onclick=()=>setView("r");$("tDash").onclick=()=>setView("d");$("rrf").onclick=()=>loadReqs();
 if($("dback"))$("dback").onclick=()=>setView("r");
+if($("navReq"))$("navReq").onclick=e=>{e.preventDefault();setView("r")};
+if($("navReq2"))$("navReq2").onclick=e=>{e.preventDefault();setView("r")};
+if($("navDash"))$("navDash").onclick=e=>{e.preventDefault();setView("d")};
+if($("rlogout"))$("rlogout").onclick=()=>$("lgo").click();
 document.querySelectorAll("[data-dnav]").forEach(a=>{
   a.onclick=e=>{
     e.preventDefault();
+    if($("vd").hidden)setView("d");
     document.querySelectorAll("[data-dnav]").forEach(x=>x.classList.remove("on"));
     a.classList.add("on");
-    const el=$(a.getAttribute("href").slice(1));
-    if(el)el.scrollIntoView({behavior:"smooth",block:"start"});
+    setTimeout(()=>{const el=$(a.getAttribute("href").slice(1));if(el)el.scrollIntoView({behavior:"smooth",block:"start"})},50);
   };
 });
 async function rcall(body){
