@@ -581,6 +581,39 @@ body.dash-on .dash-main{padding-left:68px}
 .c-dark .mu{color:#94a3b8}
 .c-dark .em{color:#94a3b8}
 
+/* View enter animations (Requests ↔ Dashboard) */
+@keyframes viewIn{
+  from{opacity:0;transform:translateY(16px)}
+  to{opacity:1;transform:translateY(0)}
+}
+@keyframes kpiIn{
+  from{opacity:0;transform:translateY(12px) scale(.97)}
+  to{opacity:1;transform:translateY(0) scale(1)}
+}
+.view-enter .dash-main > *{
+  animation:viewIn .48s cubic-bezier(.22,1,.36,1) both
+}
+.view-enter .dash-main > *:nth-child(1){animation-delay:.03s}
+.view-enter .dash-main > *:nth-child(2){animation-delay:.08s}
+.view-enter .dash-main > *:nth-child(3){animation-delay:.13s}
+.view-enter .dash-main > *:nth-child(4){animation-delay:.18s}
+.view-enter .dash-main > *:nth-child(5){animation-delay:.23s}
+.view-enter .dash-main > *:nth-child(6){animation-delay:.28s}
+.view-enter .dash-main > *:nth-child(7){animation-delay:.33s}
+.view-enter .dash-main > *:nth-child(n+8){animation-delay:.38s}
+.view-enter .dash-kpi > div{
+  animation:kpiIn .45s cubic-bezier(.22,1,.36,1) both
+}
+.view-enter .dash-kpi > div:nth-child(1){animation-delay:.1s}
+.view-enter .dash-kpi > div:nth-child(2){animation-delay:.15s}
+.view-enter .dash-kpi > div:nth-child(3){animation-delay:.2s}
+.view-enter .dash-kpi > div:nth-child(4){animation-delay:.25s}
+.view-enter .dash-kpi > div:nth-child(5){animation-delay:.3s}
+.view-enter .dash-kpi > div:nth-child(6){animation-delay:.35s}
+.view-enter .c-dark,.view-enter .req-filters,.view-enter .rc{
+  animation:viewIn .45s cubic-bezier(.22,1,.36,1) both
+}
+
 .dash-kpi{
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
@@ -1127,6 +1160,12 @@ $("lgo").onclick=()=>{
 
 /* ---------- requests: dashboard / status / history / Excel export ---------- */
 let REQS=[],RSTAT=["Pending","Approved","Issued","Completed"],ISSTOCK=false,rst="All";
+function playViewAnim(id){
+  const el=$(id);if(!el)return;
+  el.classList.remove("view-enter");
+  void el.offsetWidth;
+  el.classList.add("view-enter");
+}
 function setView(v){
   $("vf").hidden=v!="n";$("vr").hidden=v!="r";$("vd").hidden=v!="d";$("ps").hidden=v!="p";$("done").hidden=true;
   $("tNew").classList.toggle("on",v=="n");$("tReq").classList.toggle("on",v=="r");$("tDash").classList.toggle("on",v=="d");
@@ -1138,7 +1177,9 @@ function setView(v){
   const nr=$("navReq"),nd=$("navDash");
   if(nr)nr.classList.toggle("on",v=="r");
   if(nd)nd.classList.toggle("on",v=="d");
-  if(v=="r"||v=="d")loadReqs();if(v=="r")badge();setTitle()
+  if(v=="r"||v=="d")loadReqs();if(v=="r")badge();setTitle();
+  if(v=="d")playViewAnim("vd");
+  if(v=="r"&&isSt())playViewAnim("vr");
 }
 $("tNew").onclick=()=>setView("n");$("tReq").onclick=()=>setView("r");$("tDash").onclick=()=>setView("d");$("rrf").onclick=()=>loadReqs();
 if($("dback"))$("dback").onclick=()=>setView("r");
