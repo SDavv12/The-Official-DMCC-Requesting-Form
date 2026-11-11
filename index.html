@@ -506,6 +506,21 @@ body.dash-on .dash-main{padding-left:68px}
   border:1px solid transparent;transition:all .15s
 }
 .dash-nav a:hover{background:#1b2433;color:#e8eef7}
+.nav-badge,.trig-badge{
+  display:none;min-width:18px;height:18px;padding:0 5px;
+  border-radius:99px;background:#ef4444;color:#fff;
+  font-size:11px;font-weight:700;line-height:18px;text-align:center;
+  font-variant-numeric:tabular-nums
+}
+.nav-badge{margin-left:8px;display:none;vertical-align:middle}
+.nav-badge.on{display:inline-block}
+.trig-badge{
+  position:absolute;top:-4px;right:-4px;
+  min-width:16px;height:16px;line-height:16px;font-size:10px;
+  box-shadow:0 0 0 2px #0b1220
+}
+.trig-badge.on{display:grid;place-items:center}
+
 .dash-nav a.on{
   background:rgba(45,212,191,.14);
   border-color:rgba(45,212,191,.35);
@@ -671,7 +686,7 @@ body.dash-on .dash-main{padding-left:68px}
   </div>
 </div>
 <div class="dash-rail" id="dashRail" aria-hidden="true"></div>
-<button type="button" class="dash-trigger" id="dashTrigger" title="Menu" aria-label="Open menu">☰</button>
+<button type="button" class="dash-trigger" id="dashTrigger" title="Menu" aria-label="Open menu">☰<span class="trig-badge" id="trigBadge"></span></button>
 <div class="w">
 <div class="hd"><div class="lang noprint" id="lang"><button class="chip" data-l="en">English</button><button class="chip" data-l="km">ខ្មែរ</button></div><div class="hr"><div><h1 data-i18n="title">Item Request Form</h1><div class="mu" data-i18n-html="subtitle">Select the items you need, enter quantities, and submit. Fields marked <span class="rq">*</span> are required.</div></div><img src="logo.png" alt="Domrey Mother &amp; Child Clinic"></div></div>
 <div id="note"></div>
@@ -719,7 +734,7 @@ body.dash-on .dash-main{padding-left:68px}
       </div>
     </div>
     <nav class="dash-nav">
-      <a href="#" class="on" id="navReq" data-goview="r">Requests</a>
+      <a href="#" class="on" id="navReq" data-goview="r">Requests <span class="nav-badge" id="navReqBadge"></span></a>
       <a href="#" id="navDash" data-goview="d">Dashboard</a>
     </nav>
     <div class="dash-side-foot">
@@ -1029,7 +1044,12 @@ ${r.notes?`<div class="nt"><b>${esc(t("slip.notes","Notes:"))}</b> ${esc(r.notes
 <div class="sig"><div>${esc(t("slip.sig1","Requested by (name / signature / date)"))}</div><div>${esc(t("slip.sig2","Received by (name / signature / date)"))}</div></div>`;
   $("doneMsg").innerHTML=`<b>${esc(t("done.msg1","Request submitted."))}</b> `+(ref?`${esc(t("done.msg2","Your reference number is"))} <b>${esc(ref)}</b>. `:"")+esc(t("done.msg3","Print this page (or save it as PDF) and give it to the receiver to confirm."));
 }
-function setTitle(){document.title=!$("ps").hidden&&PSX?PSX.x.ref+" - "+t("ps.title","Approved Request"):!$("done").hidden&&LASTDONE?(LASTDONE.ref?LASTDONE.ref+" - ":"")+t("slip.title","Item Request"):t("title","Item Request Form")}
+function pendingN(){return(REQS||[]).filter(r=>r.status==="Pending").length}
+function setTitle(){
+  let base=!$("ps").hidden&&PSX?PSX.x.ref+" - "+t("ps.title","Approved Request"):!$("done").hidden&&LASTDONE?(LASTDONE.ref?LASTDONE.ref+" - ":"")+t("slip.title","Item Request"):t("title","Item Request Form");
+  const n=isSt()?pendingN():(NOTI||[]).length;
+  document.title=(n?`(${n}) `:"")+base;
+}
 $("prt").onclick=()=>window.print();
 $("newReq").onclick=()=>{$("done").hidden=true;$("vf").hidden=false;setTitle();scrollTo(0,0)};
 
@@ -1208,6 +1228,7 @@ function drawReqs(){
   const r=rshow();$("rcnt").textContent=r.length+" "+t("r.n","requests");
   $("rl").innerHTML=r.map(cardHtml).join("")||`<div class="em">${esc(t("r.none","No requests found"))}</div>`;
   Object.keys(REV).forEach(ref=>{const x=REQS.find(q=>q.ref==ref);if(x)x.items.forEach((_,k)=>rvMark(ref,k))});
+  badge();
 }
 ["rq","rd","ra","rb"].forEach(id=>{$(id).oninput=drawReqs;$(id).onchange=drawReqs});
 $("rch").onclick=e=>{const s=e.target.dataset.s;if(!s)return;rst=s;drawReqs()};
@@ -1304,15 +1325,25 @@ ${x.notes?`<div class="nt"><b>${esc(t("slip.notes","Notes:"))}</b> ${esc(x.notes
 $("pprt").onclick=()=>window.print();
 $("pback").onclick=()=>setView("r");
 
-/* ---------- in-system notification for departments ---------- */
+/* ---------- badges: stock = pending count; departments = feedback notices ---------- */
 function badge(){
-  $("tReq").textContent=t("tab.req","Requests")+(NOTI.length?" ("+NOTI.length+")":"");
-  $("fb").innerHTML=NOTI.length&&$("vr").hidden&&$("lg").hidden?`<div class="msg noprint">🔔 ${esc(t("nt.msg","Main Stock sent feedback on {n} request(s).",{n:NOTI.length}))} <button id="fbv">${esc(t("nt.view","View"))}</button></div>`:"";
+  const stock=isSt(),n=stock?pendingN():(NOTI||[]).length,label=t("tab.req","Requests");
+  $("tReq").textContent=label+(n?" ("+n+")":"");
+  const nb=$("navReqBadge");
+  if(nb){nb.textContent=n>99?"99+":String(n);nb.classList.toggle("on",n>0)}
+  const tb=$("trigBadge");
+  if(tb){tb.textContent=n>99?"99+":String(n);tb.classList.toggle("on",stock&&n>0)}
+  $("fb").innerHTML=!stock&&n&&$("vr").hidden&&$("lg").hidden?`<div class="msg noprint">🔔 ${esc(t("nt.msg","Main Stock sent feedback on {n} request(s).",{n:n}))} <button id="fbv">${esc(t("nt.view","View"))}</button></div>`:"";
+  setTitle();
 }
 $("fb").onclick=e=>{if(e.target.id=="fbv")setView("r")};
 async function checkNotices(){if(!SESS||isSt()||document.hidden)return;try{const j=await rcall({action:"notices"});if(j){NOTI=j.refs||[];badge()}}catch(e){}}
-function startPoll(){stopPoll();if(!isSt())PT=setInterval(checkNotices,60000)}
-function stopPoll(){if(PT){clearInterval(PT);PT=null}NOTI=[];$("tReq").textContent=t("tab.req","Requests")}
+function startPoll(){
+  stopPoll();
+  if(isSt())PT=setInterval(()=>{if(!document.hidden&&SESS)loadReqs()},60000);
+  else PT=setInterval(checkNotices,60000);
+}
+function stopPoll(){if(PT){clearInterval(PT);PT=null}NOTI=[];if($("tReq"))$("tReq").textContent=t("tab.req","Requests");const nb=$("navReqBadge"),tb=$("trigBadge");if(nb)nb.classList.remove("on");if(tb)tb.classList.remove("on")}
 
 /* ---------- dashboard (stock team): report per department for a date range ---------- */
 const TODAY=()=>new Date().toLocaleString("sv-SE",{timeZone:CFG.TIMEZONE||"Asia/Phnom_Penh"}).slice(0,10);
