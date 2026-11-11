@@ -43,7 +43,7 @@ button:disabled{opacity:.5;cursor:default}
 .tabs button.on{background:var(--ac2);border-color:var(--ac);color:var(--ac);font-weight:600}
 .msg{padding:12px 14px;border-radius:8px;margin-bottom:12px;background:var(--ac2);color:var(--tx);border:1px solid var(--ac)}
 .msg.w2{border-color:var(--wa);background:transparent}
-.err{color:var(--er);font-size:13px;margin-top:6px}
+.err{color:var(--er);font-size:13px;margin-top:6px;white-space:pre-line}
 .rc{border:1px solid var(--bd);border-radius:8px;padding:12px;margin-bottom:10px}
 .rc.dn{opacity:.6}.rc ul{margin:8px 0 0;padding-left:18px}
 .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:space-between}
@@ -364,7 +364,23 @@ const SK="irf-session";
 const getSess=()=>{try{return JSON.parse(sessionStorage.getItem(SK)||"null")}catch(e){return null}};
 const setSess=v=>{try{v?sessionStorage.setItem(SK,JSON.stringify(v)):sessionStorage.removeItem(SK)}catch(e){}};
 let SESS=getSess();
-function showLogin(msg){SESS=null;setSess(null);$("vf").hidden=true;$("done").hidden=true;$("ub").hidden=true;$("tabs").hidden=true;$("vr").hidden=true;$("vd").hidden=true;$("ps").hidden=true;$("fb").innerHTML="";stopPoll();$("lg").hidden=false;$("lge").textContent=msg||"";$("lpI").value="";scrollTo(0,0)}
+/* Portal open 06:00–16:00 Asia/Phnom_Penh daily */
+const CLOSED_MSG="Domrey Mother & Child Clinic's online portal is open daily between 6:00 AM and 4:00 PM.\nPlease log back in tomorrow morning starting at 6:00 AM to complete your request.";
+function isPortalOpen(){
+  try{
+    const parts=new Intl.DateTimeFormat("en-GB",{timeZone:CFG.TIMEZONE||"Asia/Phnom_Penh",hour:"numeric",minute:"numeric",hour12:false}).formatToParts(new Date());
+    const h=Number(parts.find(p=>p.type==="hour").value),m=Number(parts.find(p=>p.type==="minute").value);
+    const mins=h*60+m;
+    return mins>=6*60&&mins<16*60;   // 06:00 inclusive → 16:00 exclusive
+  }catch(e){return true}
+}
+function enforceHours(){
+  if(isPortalOpen())return false;
+  showLogin(CLOSED_MSG);
+  $("luI").disabled=true;$("lpI").disabled=true;$("lgb").disabled=true;
+  return true;
+}
+function showLogin(msg){SESS=null;setSess(null);$("vf").hidden=true;$("done").hidden=true;$("ub").hidden=true;$("tabs").hidden=true;$("vr").hidden=true;$("vd").hidden=true;$("ps").hidden=true;$("fb").innerHTML="";stopPoll();$("lg").hidden=false;$("lge").textContent=msg||"";$("lpI").value="";$("luI").disabled=false;$("lpI").disabled=false;$("lgb").disabled=false;scrollTo(0,0)}
 function fillNames(){
   const dept=(SESS&&SESS.dept)||"";
   const list=(CFG.STAFF&&CFG.STAFF[dept])||[];
@@ -374,6 +390,7 @@ function fillNames(){
   if(list.includes(cur))$("nmI").value=cur;
 }
 function showApp(){
+  if(enforceHours())return;
   $("lg").hidden=true;$("ub").hidden=false;$("ubU").textContent=SESS.user;$("ubD").textContent=SESS.dept;
   $("dpI").innerHTML=`<option>${esc(SESS.dept)}</option>`;$("dpI").value=SESS.dept;$("dpI").disabled=true;   // department comes from the account
   fillNames();
@@ -382,6 +399,7 @@ function showApp(){
   drawChips();draw();list();
 }
 $("lgb").onclick=async()=>{
+  if(enforceHours())return;
   const u=$("luI").value.trim(),p=$("lpI").value;
   if(!u||!p)return $("lge").textContent=t("e.enter","Enter your username and password.");
   if(!SHEET_URL||SHEET_URL.startsWith("PASTE"))return $("lge").textContent=t("e.noconn","This form isn’t connected to a Google Sheet yet (SHEET_URL in config.js is not set).");
@@ -635,7 +653,9 @@ $("lang").hidden=!(window.I18N&&window.I18N.km);          // no lang.js uploaded
 $("lang").onclick=e=>{const l=e.target.dataset&&e.target.dataset.l;if(l)setLang(l,true)};
 
 drawChips();draw();loadItems();
-SESS?showApp():showLogin("");
+if(enforceHours()){/* closed – stay on login with message */}
+else if(SESS)showApp();
+else showLogin("");
 let savedLang=null;try{savedLang=localStorage.getItem(LK)}catch(e){}
 setLang(savedLang||((navigator.language||"").toLowerCase().startsWith("km")?"km":"en"),false);
 </script></body></html>
