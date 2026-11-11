@@ -244,6 +244,42 @@ button:disabled{opacity:.45;cursor:default;box-shadow:none}
 .rc ul{margin:8px 0 0;padding-left:18px}
 .rc.nw{border-color:var(--ac);box-shadow:0 0 0 1px color-mix(in srgb,var(--ac) 25%,transparent)}
 
+/* Skeleton loading shimmer */
+@keyframes skShine{
+  0%{background-position:200% 0}
+  100%{background-position:-200% 0}
+}
+.sk-wrap{display:flex;flex-direction:column;gap:12px}
+.sk-card{
+  border:1px solid var(--bd);border-radius:14px;padding:16px 18px;
+  background:var(--card);overflow:hidden
+}
+body.dash-on .sk-card{background:#121a27;border-color:#243041}
+.sk-line,.sk-pill,.sk-block{
+  border-radius:8px;
+  background:linear-gradient(90deg,
+    color-mix(in srgb,var(--bd) 55%,transparent) 0%,
+    color-mix(in srgb,var(--mu) 18%,transparent) 45%,
+    color-mix(in srgb,var(--bd) 55%,transparent) 90%);
+  background-size:200% 100%;
+  animation:skShine 1.35s ease-in-out infinite
+}
+body.dash-on .sk-line,body.dash-on .sk-pill,body.dash-on .sk-block{
+  background:linear-gradient(90deg,#1b2433 0%,#2a3548 45%,#1b2433 90%);
+  background-size:200% 100%
+}
+.sk-row{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px}
+.sk-line{height:12px}
+.sk-line.lg{height:16px;width:42%}
+.sk-line.sm{height:10px;width:58%;margin-top:8px}
+.sk-line.md{height:11px;width:70%;margin-top:10px}
+.sk-pills{display:flex;gap:8px}
+.sk-pill{height:22px;width:72px;border-radius:99px}
+.sk-block{height:10px;width:88%;margin-top:8px}
+.sk-block.short{width:55%}
+.sk-actions{display:flex;gap:8px;margin-top:14px}
+.sk-pill.btn{width:96px;height:32px;border-radius:8px}
+
 .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between}
 .hid{display:none}
 
@@ -1131,8 +1167,17 @@ async function rcall(body){
   if(!j.ok){if(j.auth){showLogin(t("e.expired","Your login has expired. Please log in again. Your request is still here."));return null}throw new Error("SERVER:"+(j.error||"unknown error"))}
   return j;
 }
+function skReqs(n=4){
+  return `<div class="sk-wrap" aria-busy="true" aria-label="${esc(t("rload","Loading requests…"))}">`+
+    Array.from({length:n},()=>`<div class="sk-card">
+      <div class="sk-row"><div class="sk-line lg"></div><div class="sk-pills"><span class="sk-pill"></span><span class="sk-pill"></span></div></div>
+      <div class="sk-line sm"></div>
+      <div class="sk-block"></div><div class="sk-block short"></div>
+      <div class="sk-actions"><span class="sk-pill btn"></span><span class="sk-pill btn"></span><span class="sk-pill btn"></span></div>
+    </div>`).join("")+`</div>`
+}
 async function loadReqs(){
-  $("rl").innerHTML=`<div class="em">${esc(t("rload","Loading requests…"))}</div>`;
+  $("rl").innerHTML=skReqs(4);
   try{const j=await rcall({action:"list"});if(!j)return;
     REQS=j.requests;ISSTOCK=j.stock;RSTAT=j.statuses;
     const cur=$("rd").value,ds=[...new Set(REQS.map(r=>r.dept))].sort();
