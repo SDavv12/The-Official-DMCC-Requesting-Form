@@ -434,7 +434,9 @@ body.dash-on .dash-rail{display:block}
 }
 body.dash-on .dash-trigger{display:grid}
 .dash-trigger:hover{background:#1b2433;border-color:#2dd4bf;transform:scale(1.06)}
-body.dash-on.side-open .dash-trigger{opacity:.25;pointer-events:none}
+body.dash-on.side-open .dash-trigger{
+  opacity:0;visibility:hidden;pointer-events:none;transform:scale(.8)
+}
 
 .dash-side{
   position:fixed;left:0;top:0;bottom:0;width:248px;z-index:95;
@@ -723,7 +725,6 @@ body.dash-on .dash-main{padding-left:68px}
       </div>
     </div>
     <nav class="dash-nav">
-      <a href="#" id="navReq2" data-goview="r">Requests</a>
       <a href="#dsec-overview" class="on" data-dnav="overview">Overview</a>
       <a href="#dsec-dept" data-dnav="dept">By department</a>
       <a href="#dsec-urgent" data-dnav="urgent">Urgent</a>
