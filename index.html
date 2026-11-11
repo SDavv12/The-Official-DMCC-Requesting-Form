@@ -500,8 +500,51 @@ body.dash-on #vd{display:block}
   body.dash-on .dash{display:block;background:#fff;color:#000}
   body.dash-on .dash-side{display:none}
 }
+
+/* Closed-hours modal */
+.modal-bg{
+  position:fixed;inset:0;z-index:9999;
+  background:rgba(0,0,0,.55);
+  display:flex;align-items:center;justify-content:center;
+  padding:20px;
+  opacity:0;visibility:hidden;
+  transition:opacity .28s ease,visibility .28s ease;
+  backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)
+}
+.modal-bg.show{opacity:1;visibility:visible}
+.modal-box{
+  background:var(--card);color:var(--tx);
+  border:1px solid var(--bd);border-radius:16px;
+  max-width:420px;width:100%;
+  padding:28px 24px 22px;text-align:center;
+  box-shadow:0 20px 50px rgba(0,0,0,.35);
+  transform:translateY(18px) scale(.94);
+  transition:transform .32s cubic-bezier(.22,1,.36,1)
+}
+.modal-bg.show .modal-box{transform:translateY(0) scale(1)}
+.modal-icon{
+  width:56px;height:56px;border-radius:50%;
+  margin:0 auto 14px;
+  display:grid;place-items:center;
+  background:var(--ac2);color:var(--ac);
+  font-size:26px
+}
+.modal-box h3{margin:0 0 10px;font-size:18px}
+.modal-box p{margin:0 0 8px;color:var(--mu);font-size:14px;line-height:1.55;white-space:pre-line}
+.modal-box .modal-ok{
+  margin-top:18px;min-width:120px
+}
 </style></head>
-<body><div class="w">
+<body>
+<div class="modal-bg" id="hoursModal" role="dialog" aria-modal="true" aria-labelledby="hoursTitle">
+  <div class="modal-box">
+    <div class="modal-icon">🕐</div>
+    <h3 id="hoursTitle">Portal closed</h3>
+    <p id="hoursMsg"></p>
+    <button class="p modal-ok" id="hoursOk">OK</button>
+  </div>
+</div>
+<div class="w">
 <div class="hd"><div class="lang noprint" id="lang"><button class="chip" data-l="en">English</button><button class="chip" data-l="km">ខ្មែរ</button></div><div class="hr"><div><h1 data-i18n="title">Item Request Form</h1><div class="mu" data-i18n-html="subtitle">Select the items you need, enter quantities, and submit. Fields marked <span class="rq">*</span> are required.</div></div><img src="logo.png" alt="Domrey Mother &amp; Child Clinic"></div></div>
 <div id="note"></div>
 <div id="fb" class="noprint"></div>
@@ -846,10 +889,19 @@ function isPortalOpen(){
   }catch(e){return true}
 }
 const isStockRole=r=>/^(stock|admin)$/i.test(r||"");
+function showHoursModal(){
+  $("hoursMsg").textContent=CLOSED_MSG;
+  $("hoursModal").classList.add("show");
+  $("hoursOk").focus();
+}
+function hideHoursModal(){$("hoursModal").classList.remove("show")}
+$("hoursOk").onclick=hideHoursModal;
+$("hoursModal").onclick=e=>{if(e.target===$("hoursModal"))hideHoursModal()};
 /* Returns true if access is blocked (non-stock + outside hours) */
 function enforceHours(role){
   if(isPortalOpen()||isStockRole(role))return false;
-  showLogin(CLOSED_MSG);
+  showLogin("");
+  showHoursModal();
   return true;
 }
 function showLogin(msg){SESS=null;setSess(null);document.body.classList.remove("dash-on");$("vf").hidden=true;$("done").hidden=true;$("ub").hidden=true;$("tabs").hidden=true;$("vr").hidden=true;$("vd").hidden=true;$("ps").hidden=true;$("fb").innerHTML="";stopPoll();$("lg").hidden=false;$("lge").textContent=msg||"";$("lpI").value="";scrollTo(0,0)}
