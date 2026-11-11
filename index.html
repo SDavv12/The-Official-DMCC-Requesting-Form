@@ -410,25 +410,46 @@ body.dash-on .req-actions button.p{
 }
 
 .dash{
-  display:grid;
-  grid-template-columns:240px 1fr;
+  display:block;
   min-height:100vh;
   background:#0b1220;
-  color:#e8eef7
-}
-@media(max-width:860px){
-  .dash{grid-template-columns:1fr}
-  .dash-side{flex-direction:row;flex-wrap:wrap;gap:8px;padding:12px!important;position:sticky;top:0;z-index:5;background:#121a27}
-  .dash-nav{display:flex;flex-wrap:wrap;gap:6px;width:100%}
-  .dash-nav a{padding:8px 12px!important}
-  .dash-side-foot{width:100%}
+  color:#e8eef7;
+  position:relative
 }
 
+/* Auto-hide sidebar: edge rail + menu button */
+.dash-rail{
+  position:fixed;left:0;top:0;bottom:0;width:16px;z-index:90;
+  display:none
+}
+body.dash-on .dash-rail{display:block}
+.dash-trigger{
+  position:fixed;left:12px;top:16px;z-index:96;
+  width:42px;height:42px;border-radius:12px;
+  background:#121a27;border:1px solid #243041;
+  color:#2dd4bf;font-size:20px;line-height:1;cursor:pointer;
+  display:none;place-items:center;
+  box-shadow:0 8px 22px rgba(0,0,0,.4);
+  transition:transform .2s ease,background .15s,border-color .15s,opacity .25s
+}
+body.dash-on .dash-trigger{display:grid}
+.dash-trigger:hover{background:#1b2433;border-color:#2dd4bf;transform:scale(1.06)}
+body.dash-on.side-open .dash-trigger{opacity:.25;pointer-events:none}
+
 .dash-side{
+  position:fixed;left:0;top:0;bottom:0;width:248px;z-index:95;
   background:#121a27;
   border-right:1px solid #243041;
   padding:20px 14px;
-  display:flex;flex-direction:column;gap:18px
+  display:flex;flex-direction:column;gap:18px;
+  transform:translateX(-108%);
+  transition:transform .3s cubic-bezier(.22,1,.36,1);
+  box-shadow:10px 0 32px rgba(0,0,0,.4)
+}
+body.dash-on .dash-side.open{transform:translateX(0)}
+body.dash-on .dash-main{padding-left:20px}
+@media(max-width:860px){
+  .dash-side{width:min(280px,88vw)}
 }
 .dash-brand{display:flex;align-items:center;gap:12px;padding:4px 8px 12px}
 .dash-logo{
@@ -610,6 +631,8 @@ body.dash-on .req-actions button.p{
     <button class="p modal-ok" id="hoursOk">OK</button>
   </div>
 </div>
+<div class="dash-rail" id="dashRail" aria-hidden="true"></div>
+<button type="button" class="dash-trigger" id="dashTrigger" title="Menu" aria-label="Open menu">☰</button>
 <div class="w">
 <div class="hd"><div class="lang noprint" id="lang"><button class="chip" data-l="en">English</button><button class="chip" data-l="km">ខ្មែរ</button></div><div class="hr"><div><h1 data-i18n="title">Item Request Form</h1><div class="mu" data-i18n-html="subtitle">Select the items you need, enter quantities, and submit. Fields marked <span class="rq">*</span> are required.</div></div><img src="logo.png" alt="Domrey Mother &amp; Child Clinic"></div></div>
 <div id="note"></div>
@@ -1052,6 +1075,7 @@ function setView(v){
   const stockShell=isSt()&&(v=="r"||v=="d");
   document.body.classList.toggle("dash-on",stockShell||v=="d");
   if($("vr"))$("vr").classList.toggle("stock-req",isSt());
+  if(!(stockShell||v=="d")){sideEls().forEach(s=>s.classList.remove("open"));document.body.classList.remove("side-open")}
   /* sidebar active state */
   const nr=$("navReq"),nd=$("navDash");
   if(nr)nr.classList.toggle("on",v=="r");
@@ -1064,6 +1088,33 @@ if($("navReq"))$("navReq").onclick=e=>{e.preventDefault();setView("r")};
 if($("navReq2"))$("navReq2").onclick=e=>{e.preventDefault();setView("r")};
 if($("navDash"))$("navDash").onclick=e=>{e.preventDefault();setView("d")};
 if($("rlogout"))$("rlogout").onclick=()=>$("lgo").click();
+
+/* Auto-hide sidebar: hover edge/button to slide in, leave to slide out */
+let sideTimer=null;
+function sideEls(){return[...document.querySelectorAll(".dash-side")]}
+function openSide(){
+  clearTimeout(sideTimer);
+  sideEls().forEach(s=>s.classList.add("open"));
+  document.body.classList.add("side-open");
+}
+function closeSide(){
+  clearTimeout(sideTimer);
+  sideTimer=setTimeout(()=>{
+    sideEls().forEach(s=>s.classList.remove("open"));
+    document.body.classList.remove("side-open");
+  },180);
+}
+if($("dashTrigger")){
+  $("dashTrigger").onmouseenter=openSide;
+  $("dashTrigger").onclick=e=>{e.preventDefault();document.body.classList.contains("side-open")?closeSide():openSide()};
+}
+if($("dashRail"))$("dashRail").onmouseenter=openSide;
+sideEls().forEach(s=>{s.onmouseenter=openSide;s.onmouseleave=closeSide});
+document.addEventListener("click",e=>{
+  if(!document.body.classList.contains("side-open"))return;
+  if(e.target.closest(".dash-side")||e.target.closest("#dashTrigger")||e.target.closest("#dashRail"))return;
+  closeSide();
+});
 document.querySelectorAll("[data-dnav]").forEach(a=>{
   a.onclick=e=>{
     e.preventDefault();
