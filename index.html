@@ -336,8 +336,8 @@ html[lang="km"] .rf{letter-spacing:0}
   .c{box-shadow:none}
 }
 
-/* ===== Stock Dashboard (inventory style) ===== */
-body.dash-on{background:#071a1f}
+/* ===== Stock Dashboard (match mainstock dark theme) ===== */
+body.dash-on{background:#0b1220}
 body.dash-on .w{max-width:none;padding:0;margin:0}
 body.dash-on .hd,body.dash-on .ub,body.dash-on .tabs,body.dash-on #note,body.dash-on #fb,
 body.dash-on .mu.noprint{display:none!important}
@@ -347,100 +347,98 @@ body.dash-on #vd{display:block}
   display:grid;
   grid-template-columns:240px 1fr;
   min-height:100vh;
-  background:linear-gradient(165deg,#06262c 0%,#0a3a42 40%,#0d4a52 100%);
-  color:#e7f6f8
+  background:#0b1220;
+  color:#e8eef7
 }
 @media(max-width:860px){
   .dash{grid-template-columns:1fr}
-  .dash-side{flex-direction:row;flex-wrap:wrap;gap:8px;padding:12px!important;position:sticky;top:0;z-index:5}
+  .dash-side{flex-direction:row;flex-wrap:wrap;gap:8px;padding:12px!important;position:sticky;top:0;z-index:5;background:#121a27}
   .dash-nav{display:flex;flex-wrap:wrap;gap:6px;width:100%}
   .dash-nav a{padding:8px 12px!important}
   .dash-side-foot{width:100%}
 }
 
 .dash-side{
-  background:rgba(0,0,0,.22);
-  border-right:1px solid rgba(255,255,255,.08);
+  background:#121a27;
+  border-right:1px solid #243041;
   padding:20px 14px;
   display:flex;flex-direction:column;gap:18px
 }
 .dash-brand{display:flex;align-items:center;gap:12px;padding:4px 8px 12px}
 .dash-logo{
   width:42px;height:42px;border-radius:50%;
-  background:linear-gradient(135deg,#14b8a6,#0d9488);
+  background:#2dd4bf;
   display:grid;place-items:center;font-weight:800;color:#042f2e;font-size:14px
 }
-.dash-brand b{display:block;font-size:15px;color:#fff}
-.dash-brand span{font-size:12px;color:#8ec5cb}
+.dash-brand b{display:block;font-size:15px;color:#e8eef7}
+.dash-brand span{font-size:12px;color:#94a3b8}
 
 .dash-nav{display:flex;flex-direction:column;gap:4px}
 .dash-nav a{
   display:block;padding:11px 14px;border-radius:10px;
-  color:#b7d9de;text-decoration:none;font-weight:500;font-size:14px;
+  color:#94a3b8;text-decoration:none;font-weight:500;font-size:14px;
   border:1px solid transparent;transition:all .15s
 }
-.dash-nav a:hover{background:rgba(255,255,255,.06);color:#fff}
+.dash-nav a:hover{background:#1b2433;color:#e8eef7}
 .dash-nav a.on{
-  background:rgba(20,184,166,.18);
+  background:rgba(45,212,191,.14);
   border-color:rgba(45,212,191,.35);
-  color:#5eead4
+  color:#2dd4bf
 }
 .dash-back{
-  width:100%;background:transparent;border:1px solid rgba(255,255,255,.15);
-  color:#c5e4e8;border-radius:10px;padding:10px 12px
+  width:100%;background:transparent;border:1px solid #243041;
+  color:#94a3b8;border-radius:10px;padding:10px 12px
 }
-.dash-back:hover{border-color:#2dd4bf;color:#fff;background:rgba(255,255,255,.05)}
+.dash-back:hover{border-color:#2dd4bf;color:#e8eef7;background:#1b2433}
 
 .dash-main{padding:22px 24px 40px;overflow-x:hidden}
 .dash-top{
   display:flex;justify-content:space-between;align-items:flex-start;
   gap:16px;flex-wrap:wrap;margin-bottom:18px
 }
-.dash-title{margin:0 0 4px;font-size:1.55rem;font-weight:700;color:#f0fdfa;letter-spacing:-.02em}
-.dash-top .mu{color:#8ec5cb}
+.dash-title{margin:0 0 4px;font-size:1.55rem;font-weight:700;color:#e8eef7;letter-spacing:-.02em}
+.dash-top .mu{color:#94a3b8}
 .dash-actions{display:flex;gap:8px;flex-wrap:wrap}
 .dash-actions button{
-  background:rgba(255,255,255,.06);
-  border:1px solid rgba(255,255,255,.12);
-  color:#e7f6f8
+  background:#121a27;
+  border:1px solid #243041;
+  color:#e8eef7
 }
-.dash-actions button:hover{border-color:#2dd4bf;background:rgba(45,212,191,.12)}
+.dash-actions button:hover{border-color:#2dd4bf;background:#1b2433}
 .dash-actions button.p{
-  background:#14b8a6;border-color:#14b8a6;color:#042f2e;
-  box-shadow:0 4px 14px rgba(20,184,166,.35)
+  background:#2dd4bf;border-color:#2dd4bf;color:#042f2e;
+  box-shadow:none
 }
-.dash-actions button.p:hover{background:#2dd4bf;border-color:#2dd4bf}
+.dash-actions button.p:hover{background:#5eead4;border-color:#5eead4}
 
-.dash-filters{
-  margin-bottom:18px
-}
-.dash-filters .l{color:#9fd0d6}
+.dash-filters{margin-bottom:18px}
+.dash-filters .l{color:#94a3b8}
 .dash-filters input,.dash-filters select{
-  background:rgba(0,0,0,.25);
-  border-color:rgba(255,255,255,.12);
-  color:#e7f6f8
+  background:#0b1220;
+  border-color:#243041;
+  color:#e8eef7
 }
 .dash-filters .chip{
-  background:rgba(255,255,255,.06);
-  border-color:rgba(255,255,255,.12);
-  color:#c5e4e8
+  background:#0b1220;
+  border-color:#243041;
+  color:#94a3b8
 }
-.dash-filters .chip:hover{border-color:#2dd4bf;color:#5eead4}
+.dash-filters .chip:hover{border-color:#2dd4bf;color:#2dd4bf}
 .dash-filters .chip.on{
-  background:#14b8a6;border-color:#14b8a6;color:#042f2e
+  background:#2dd4bf;border-color:#2dd4bf;color:#042f2e
 }
 
 .c-dark{
-  background:rgba(0,0,0,.22);
-  border:1px solid rgba(255,255,255,.08);
+  background:#121a27;
+  border:1px solid #243041;
   border-radius:14px;
   padding:18px 18px;
   margin-bottom:16px;
-  box-shadow:0 8px 24px rgba(0,0,0,.18)
+  box-shadow:none
 }
-.c-dark .h3{color:#e7f6f8;margin-bottom:12px}
-.c-dark .mu{color:#8ec5cb}
-.c-dark .em{color:#8ec5cb}
+.c-dark .h3{color:#e8eef7;margin-bottom:12px}
+.c-dark .mu{color:#94a3b8}
+.c-dark .em{color:#94a3b8}
 
 .dash-kpi{
   display:grid;
@@ -449,17 +447,16 @@ body.dash-on #vd{display:block}
   margin:0 0 14px
 }
 .dash-kpi > div{
-  background:linear-gradient(160deg,rgba(13,148,136,.35),rgba(6,50,56,.85));
-  border:1px solid rgba(45,212,191,.22);
+  background:#121a27;
+  border:1px solid #243041;
   border-radius:14px;
-  padding:16px 18px;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.06)
+  padding:16px 18px
 }
 .dash-kpi b{
   display:block;
   font-size:1.75rem;
   line-height:1.15;
-  color:#f0fdfa;
+  color:#e8eef7;
   font-variant-numeric:tabular-nums;
   font-weight:700;
   letter-spacing:-.02em
@@ -471,32 +468,30 @@ body.dash-on #vd{display:block}
   font-weight:600;
   letter-spacing:.06em;
   text-transform:uppercase;
-  color:#7dd3c7
+  color:#2dd4bf
 }
 
-.dash-panel{
-  margin-bottom:16px
-}
+.dash-panel{margin-bottom:16px}
 .dash-panel-label{
   font-size:12px;font-weight:700;letter-spacing:.08em;
-  color:#7dd3c7;margin-bottom:6px
+  color:#2dd4bf;margin-bottom:6px
 }
 .dash-panel-value{
-  font-size:2.4rem;font-weight:800;color:#fff;
+  font-size:2.4rem;font-weight:800;color:#e8eef7;
   font-variant-numeric:tabular-nums;letter-spacing:-.03em
 }
 
-.dash .dt{color:#e7f6f8}
+.dash .dt{color:#e8eef7}
 .dash .dt th{
-  color:#8ec5cb;border-bottom-color:rgba(255,255,255,.1);
+  color:#94a3b8;border-bottom-color:#243041;
   background:transparent
 }
-.dash .dt td{border-bottom-color:rgba(255,255,255,.07)}
-.dash .dt tbody tr:hover{background:rgba(45,212,191,.08)}
-.dash .dt tfoot td{border-top-color:rgba(255,255,255,.15);color:#f0fdfa}
-.dash .bar{background:rgba(255,255,255,.1)}
+.dash .dt td{border-bottom-color:#243041}
+.dash .dt tbody tr:hover{background:rgba(45,212,191,.06)}
+.dash .dt tfoot td{border-top-color:#243041;color:#e8eef7}
+.dash .bar{background:#1b2433}
 .dash .bar i{background:#2dd4bf}
-.dash .em{color:#8ec5cb}
+.dash .em{color:#94a3b8}
 
 .dash-sec{scroll-margin-top:16px}
 
@@ -505,7 +500,6 @@ body.dash-on #vd{display:block}
   body.dash-on .dash{display:block;background:#fff;color:#000}
   body.dash-on .dash-side{display:none}
 }
-
 </style></head>
 <body><div class="w">
 <div class="hd"><div class="lang noprint" id="lang"><button class="chip" data-l="en">English</button><button class="chip" data-l="km">ខ្មែរ</button></div><div class="hr"><div><h1 data-i18n="title">Item Request Form</h1><div class="mu" data-i18n-html="subtitle">Select the items you need, enter quantities, and submit. Fields marked <span class="rq">*</span> are required.</div></div><img src="logo.png" alt="Domrey Mother &amp; Child Clinic"></div></div>
